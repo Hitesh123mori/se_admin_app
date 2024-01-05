@@ -31,8 +31,11 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_launcher_icons: ^0.13.1
-
-
+  responsive_builder: ^0.7.0
+  firebase_core:
+  firebase_auth:
+  cloud_firestore:
+  shimmer: 
 
 flutter_launcher_icons:
   android: "launcher_icon"

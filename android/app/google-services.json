@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "11046890544",
+    "project_id": "savyasachi-engineering",
+    "storage_bucket": "savyasachi-engineering.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:11046890544:android:83337dff57dd4ff5c151f5",
+        "android_client_info": {
+          "package_name": "com.example.se_admin_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAXSEvfTJ1gxkT_e38RbKPDVXfXo4svJCw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
