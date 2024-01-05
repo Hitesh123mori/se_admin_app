@@ -44,38 +44,38 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyAQ_F68otjmzcL2fnH3qyxxly2RnxRdn4g',
-    appId: '1:387809275070:web:629b2e377bbf45fbad42ef',
-    messagingSenderId: '387809275070',
-    projectId: 'savysachi-engineering',
-    authDomain: 'savysachi-engineering.firebaseapp.com',
-    storageBucket: 'savysachi-engineering.appspot.com',
-    measurementId: 'G-RG8QFV7DVS',
+    apiKey: 'AIzaSyDpKTVVFuDdMxEJvuVOV-APvZdUm40jGTM',
+    appId: '1:11046890544:web:218a22f2c7fa4e21c151f5',
+    messagingSenderId: '11046890544',
+    projectId: 'savyasachi-engineering',
+    authDomain: 'savyasachi-engineering.firebaseapp.com',
+    storageBucket: 'savyasachi-engineering.appspot.com',
+    measurementId: 'G-H3Y0H62FP8',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBFyH8pHURSsJoWTcHyAJ4rdkKBesAPqd0',
-    appId: '1:387809275070:android:953da3de0dc2653ead42ef',
-    messagingSenderId: '387809275070',
-    projectId: 'savysachi-engineering',
-    storageBucket: 'savysachi-engineering.appspot.com',
+    apiKey: 'AIzaSyAXSEvfTJ1gxkT_e38RbKPDVXfXo4svJCw',
+    appId: '1:11046890544:android:83337dff57dd4ff5c151f5',
+    messagingSenderId: '11046890544',
+    projectId: 'savyasachi-engineering',
+    storageBucket: 'savyasachi-engineering.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBSW9cM7EFU3uzuPtM3uRllj-OexvKYIiU',
-    appId: '1:387809275070:ios:1225bd6fdc23e35aad42ef',
-    messagingSenderId: '387809275070',
-    projectId: 'savysachi-engineering',
-    storageBucket: 'savysachi-engineering.appspot.com',
+    apiKey: 'AIzaSyBDl2fzeSZ8GROrYic_DNE_jeiLmlFO5ik',
+    appId: '1:11046890544:ios:e6a3578971482f62c151f5',
+    messagingSenderId: '11046890544',
+    projectId: 'savyasachi-engineering',
+    storageBucket: 'savyasachi-engineering.appspot.com',
     iosBundleId: 'com.example.seAdminApp',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyBSW9cM7EFU3uzuPtM3uRllj-OexvKYIiU',
-    appId: '1:387809275070:ios:21f0811da165497aad42ef',
-    messagingSenderId: '387809275070',
-    projectId: 'savysachi-engineering',
-    storageBucket: 'savysachi-engineering.appspot.com',
+    apiKey: 'AIzaSyBDl2fzeSZ8GROrYic_DNE_jeiLmlFO5ik',
+    appId: '1:11046890544:ios:009e2e827b148d83c151f5',
+    messagingSenderId: '11046890544',
+    projectId: 'savyasachi-engineering',
+    storageBucket: 'savyasachi-engineering.appspot.com',
     iosBundleId: 'com.example.seAdminApp.RunnerTests',
   );
 }
