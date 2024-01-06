@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import '../../main.dart';
 import '../../utils/colors.dart';
 import '../../utils/widgets/options.dart';
+import 'options_desktop/basic_info_desktop.dart';
+import 'options_desktop/facility_desktop.dart';
+import 'options_desktop/key_clients.dart';
+import 'options_desktop/products_desktop.dart';
 
 class HomeScreenDesktop extends StatefulWidget {
   const HomeScreenDesktop({super.key});
@@ -144,7 +148,7 @@ class _HomeScreenDesktopState extends State<HomeScreenDesktop> {
                               });
                             },
                             child: Options(
-                              optionName: 'Facility',
+                              optionName: 'Facilities',
                               isClicked: isClicked3,
                             )),
                         InkWell(
@@ -188,6 +192,22 @@ class _HomeScreenDesktopState extends State<HomeScreenDesktop> {
                           color: Colors.white24,
                         )),
                     height: mq.height * 1,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        if(isClicked1)
+                          BasicInfoDesktop() ,
+
+                        if(isClicked2)
+                          ProductsDesktop() ,
+
+                        if(isClicked3)
+                           FacilityDesktop() ,
+
+                        if(isClicked4)
+                          KClientsDesktop() ,
+                      ],
+                    ),
                   ),
                 ),
               ),
