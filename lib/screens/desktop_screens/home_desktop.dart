@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 
-import 'package:se_admin_app/utils/widgets/MyText.dart';
 
 import 'package:se_admin_app/apis/content/content.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class HomeScreenDesktop extends StatefulWidget {
+  const HomeScreenDesktop({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<HomeScreenDesktop> createState() => _HomeScreenDesktopState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenDesktopState extends State<HomeScreenDesktop> {
   late TextEditingController introduction_tec;
 
   @override
