@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:se_admin_app/screens/desktop_screens/home_desktop.dart';
 import 'package:se_admin_app/utils/colors.dart';
 import '../../main.dart';
 import '../../utils/widgets/login_textfield.dart';
@@ -33,6 +34,9 @@ class _LoginScreenDesktopState extends State<LoginScreenDesktop> {
             height: mq.height * 0.6,
             width: mq.width * 0.3,
             decoration: BoxDecoration(
+              border: Border.all(
+                color:  Colors.white24
+              ),
               color: AppColors.theme['tertiaryColor'],
               borderRadius: BorderRadius.circular(20),
             ),
@@ -87,7 +91,9 @@ class _LoginScreenDesktopState extends State<LoginScreenDesktop> {
                     InkWell(
                       splashColor: Colors.transparent,
                       highlightColor: Colors.transparent,
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(context,MaterialPageRoute(builder: (context)=>HomeScreenDesktop()));
+                        },
                       child: Container(
                         constraints: BoxConstraints(
                           minHeight: 60,

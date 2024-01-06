@@ -1,7 +1,10 @@
+import 'dart:html';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:se_admin_app/platform_define.dart';
 import 'package:se_admin_app/screens/desktop_screens/home_desktop.dart';
+import 'package:se_admin_app/screens/desktop_screens/splash_screen_dekstop.dart';
 import 'firebase_options.dart';
 
 
@@ -27,14 +30,14 @@ class _AdminAppState extends State<AdminApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Savyasachi Engineering',
+      title: 'SE - Admin',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
       // home: PlatformDefine(),
 
-      home: HomeScreen(),
+      home: PlatformDefine(),
     );
 
   }

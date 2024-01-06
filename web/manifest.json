@@ -1,6 +1,6 @@
 {
-    "name": "se_admin_app",
-    "short_name": "se_admin_app",
+    "name": "SE-Admin",
+    "short_name": "SE-Admin",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

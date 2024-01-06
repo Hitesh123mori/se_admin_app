@@ -13,7 +13,4 @@ class Content{
             }
     );
   }
-
-
-
 }

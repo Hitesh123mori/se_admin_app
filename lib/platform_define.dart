@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart' ;
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:se_admin_app/desktop.dart';
+import 'package:se_admin_app/tablet.dart';
 
 import 'mobile.dart';
 
@@ -20,6 +21,7 @@ class _PlatformDefineState extends State<PlatformDefine> {
         body: ScreenTypeLayout.builder(
           mobile:(BuildContext context) => Mobile(),
           desktop: (BuildContext context) => Desktop(),
+          tablet: (BuildContext context) => Tablet(),
         ),
       ),
     );
