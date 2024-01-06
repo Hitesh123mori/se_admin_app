@@ -34,6 +34,9 @@ class _LoginScreenDesktopState extends State<LoginScreenDesktop> {
             height: mq.height * 0.6,
             width: mq.width * 0.3,
             decoration: BoxDecoration(
+              border: Border.all(
+                color:  Colors.white24
+              ),
               color: AppColors.theme['tertiaryColor'],
               borderRadius: BorderRadius.circular(20),
             ),

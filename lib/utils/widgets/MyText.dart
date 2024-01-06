@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:shimmer/shimmer.dart';
+
 
 String MyText(
     final context, AsyncSnapshot<Map<String, dynamic>> snap, String key
