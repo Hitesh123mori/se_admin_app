@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:se_admin_app/platform_define.dart';
@@ -35,7 +37,7 @@ class _AdminAppState extends State<AdminApp> {
       ),
       // home: PlatformDefine(),
 
-      home: SplashScreenDesktop(),
+      home: PlatformDefine(),
     );
 
   }

@@ -35,7 +35,13 @@ dependencies:
   firebase_core:
   firebase_auth:
   cloud_firestore:
-  shimmer: 
+  shimmer:
+#  beamer: ^1.5.6
+#  collection: ^1.18.0
+  window_size:
+      git:
+        url: https://github.com/google/flutter-desktop-embedding
+        path: plugins/window_size
 
 flutter_launcher_icons:
   android: "launcher_icon"

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:flutter/services.dart';
+import 'package:se_admin_app/screens/mobile_screens/home_mobile.dart';
 import 'package:se_admin_app/utils/colors.dart';
 import '../../main.dart';
 import '../../utils/widgets/login_textfield.dart';
@@ -18,7 +19,7 @@ class _LoginScreenMobileState extends State<LoginScreenMobile> {
   Widget build(BuildContext context) {
     mq = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: AppColors.theme['tertiaryColor'],
+      backgroundColor: AppColors.theme['primaryColor'],
       body: Center(
         child:SingleChildScrollView(
           physics: BouncingScrollPhysics(),
@@ -73,7 +74,9 @@ class _LoginScreenMobileState extends State<LoginScreenMobile> {
                 ),
 
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>HomePageMobile()));
+                  },
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0), // Set the border radius here
