@@ -17,7 +17,7 @@ class _SplashScreenDesktopState extends State<SplashScreenDesktop> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(milliseconds: 3200), () {
+    Future.delayed(Duration(milliseconds: 1200), () {
       SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
       // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: Colors.transparent,systemNavigationBarColor: Colors.transparent));
       // if(Api.auth != null){
