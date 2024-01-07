@@ -40,7 +40,7 @@ class _OptionsState extends State<Options> {
                 color: AppColors.theme['highlightColor'],
               ),
             SizedBox(width: 10,),
-            Text(
+           Text(
               widget.optionName,
               style: TextStyle(color: AppColors.theme['secondaryColor'], fontSize: 16),
             ),
