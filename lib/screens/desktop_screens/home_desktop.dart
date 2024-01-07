@@ -11,6 +11,9 @@ import '../../utils/widgets/client_card.dart';
 import '../../utils/widgets/facility_card.dart';
 import '../../utils/widgets/options.dart';
 import 'options_desktop/basic_info_options_desktop/about_us_desktop.dart';
+import 'options_desktop/facility_detail_desktop/facility_detail_desk.dart';
+import 'options_desktop/key_clients_desktop/key_clients_desk.dart';
+import 'options_desktop/product_detail_desk/product_details_desktop.dart';
 
 class HomeScreenDesktop extends StatefulWidget {
   const HomeScreenDesktop({super.key});
@@ -46,6 +49,11 @@ class _HomeScreenDesktopState extends State<HomeScreenDesktop> {
     Product(name: "Standard Clamping", imagePath: ""),
     Product(name: "Jigs and Collets", imagePath: ""),
   ];
+
+  Product? currProduct ;
+  Facility? currFacility ;
+  KClient? currClient ;
+
 
   List<Facility> facilityList = [
     Facility(name: "CNC Milling centre", imagePath: "", discription: ""),
@@ -88,6 +96,24 @@ class _HomeScreenDesktopState extends State<HomeScreenDesktop> {
   Map<String, bool> isProductClicked = {};
   Map<String, bool> isFacilityClicked = {};
   Map<String, bool> isClientClicked = {};
+
+  _HomeScreenDesktopState() {
+    for (int i = 0; i < productList.length; i++) {
+      isProductClicked['product$i'] = (i == 0);
+    }
+
+    for (int i = 0; i < facilityList.length; i++) {
+      isFacilityClicked['facility$i'] = (i == 0);
+    }
+
+    for (int i = 0; i < clientList.length; i++) {
+      isClientClicked['client$i'] = (i == 0);
+    }
+
+    currProduct = (productList.isNotEmpty ? productList[0] : null)!;
+    currFacility = (facilityList.isNotEmpty ? facilityList[0] : null)!;
+    currClient = (clientList.isNotEmpty ? clientList[0] : null)!;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -322,6 +348,8 @@ class _HomeScreenDesktopState extends State<HomeScreenDesktop> {
                                         i++) {
                                       if (i == index) {
                                         isProductClicked['product$i'] = true;
+                                        print("#PDCT ${productList[i].name}");
+                                         currProduct = productList[i] ;
                                       } else {
                                         isProductClicked['product$i'] = false;
                                       }
@@ -347,10 +375,12 @@ class _HomeScreenDesktopState extends State<HomeScreenDesktop> {
                                 onTap: () {
                                   setState(() {
                                     for (int i = 0;
-                                        i < productList.length;
+                                        i < facilityList.length;
                                         i++) {
                                       if (i == index) {
                                         isFacilityClicked['facility$i'] = true;
+                                        print("#FCLT ${facilityList[i].name}") ;
+                                        currFacility = facilityList[i] ;
                                       } else {
                                         isFacilityClicked['facility$i'] = false;
                                       }
@@ -380,6 +410,8 @@ class _HomeScreenDesktopState extends State<HomeScreenDesktop> {
                                         i++) {
                                       if (i == index) {
                                         isClientClicked['client$i'] = true;
+                                        print("#Clnt ${clientList[i].name}") ;
+                                        currClient = clientList[i] ;
                                       } else {
                                         isClientClicked['client$i'] = false;
                                       }
@@ -389,8 +421,7 @@ class _HomeScreenDesktopState extends State<HomeScreenDesktop> {
                                 child: ClientCard(
                                   client: clientList[index],
                                   isClicked:
-                                     isClientClicked['client$index'] ??
-                                          false,
+                                      isClientClicked['client$index'] ?? false,
                                 ),
                               );
                             },
@@ -434,6 +465,9 @@ class _HomeScreenDesktopState extends State<HomeScreenDesktop> {
                           if (isDirector && isInfo) DirectorInfoDesktop(),
                           if (isAbout && isInfo) AboutDesktop(),
                           if (isContact && isInfo) ContactDetailsDesktop(),
+                          if(isProducts)  ProductDetailDesktop(product: currProduct!,) ,
+                          if(isFacilities)  FacilityDetailDesktop(facility: currFacility!,) ,
+                          if(isClients)  ClientsDetailDesktop(client: currClient!,) ,
                         ],
                       ),
                     ),
