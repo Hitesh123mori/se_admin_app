@@ -1,0 +1,18 @@
+{
+  "projects": {
+    "default": "savyasachi-engineering"
+  },
+  "targets": {
+    "savyasachi-engineering": {
+      "hosting": {
+        "admin": [
+          "se_admin_app"
+        ],
+        "web": [
+          "se_website"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}
