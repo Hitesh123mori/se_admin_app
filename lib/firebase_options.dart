@@ -66,4 +66,22 @@ class DefaultFirebaseOptions {
     projectId: 'savyasachi-engineering',
     storageBucket: 'savyasachi-engineering.appspot.com',
   );
+
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyBDl2fzeSZ8GROrYic_DNE_jeiLmlFO5ik',
+    appId: '1:11046890544:ios:e6a3578971482f62c151f5',
+    messagingSenderId: '11046890544',
+    projectId: 'savyasachi-engineering',
+    storageBucket: 'savyasachi-engineering.appspot.com',
+    iosBundleId: 'com.example.seAdminApp',
+  );
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyBDl2fzeSZ8GROrYic_DNE_jeiLmlFO5ik',
+    appId: '1:11046890544:ios:009e2e827b148d83c151f5',
+    messagingSenderId: '11046890544',
+    projectId: 'savyasachi-engineering',
+    storageBucket: 'savyasachi-engineering.appspot.com',
+    iosBundleId: 'com.example.seAdminApp.RunnerTests',
+  );
 }
