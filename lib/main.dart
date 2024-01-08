@@ -1,10 +1,6 @@
-import 'dart:html';
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:se_admin_app/platform_define.dart';
-import 'package:se_admin_app/screens/desktop_screens/home_desktop.dart';
-import 'package:se_admin_app/screens/desktop_screens/splash_screen_dekstop.dart';
 import 'firebase_options.dart';
 
 

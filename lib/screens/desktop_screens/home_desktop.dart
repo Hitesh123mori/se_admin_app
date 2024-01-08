@@ -25,6 +25,8 @@ class HomeScreenDesktop extends StatefulWidget {
 class _HomeScreenDesktopState extends State<HomeScreenDesktop> {
   late TextEditingController introduction_tec;
 
+  TextEditingController searchField = TextEditingController() ;
+
   // static variables
   // main options
   bool isInfo = true;
@@ -104,6 +106,10 @@ class _HomeScreenDesktopState extends State<HomeScreenDesktop> {
   Map<String, bool> isFacilityClicked = {};
   Map<String, bool> isClientClicked = {};
 
+  Map<String, bool> isSearchProductClicked = {};
+  Map<String, bool> isSearchFacilityClicked = {};
+  Map<String, bool> isSearchClientClicked = {};
+
   _HomeScreenDesktopState() {
     for (int i = 0; i < productList.length; i++) {
       isProductClicked['product$i'] = (i == 0);
@@ -117,9 +123,9 @@ class _HomeScreenDesktopState extends State<HomeScreenDesktop> {
       isClientClicked['client$i'] = (i == 0);
     }
 
-    currProduct = (productList.isNotEmpty ? productList[0] : null)!;
-    currFacility = (facilityList.isNotEmpty ? facilityList[0] : null)!;
-    currClient = (clientList.isNotEmpty ? clientList[0] : null)!;
+    currProduct = ((productList.isNotEmpty ? productList[0] : null)!);
+    currFacility = ((facilityList.isNotEmpty ? facilityList[0] : null)!);
+    currClient = ((clientList.isNotEmpty ? clientList[0] : null)!);
   }
 
   @override
@@ -335,6 +341,7 @@ class _HomeScreenDesktopState extends State<HomeScreenDesktop> {
                                         });
                                       },
                                       child: TextFormField(
+                                        controller: searchField,
                                         enabled: (isSearching) ? true : false,
                                         onChanged: (val) {
                                           if (isProducts)
@@ -404,18 +411,30 @@ class _HomeScreenDesktopState extends State<HomeScreenDesktop> {
                               ),
                             ),
                           ),
-                          Container(
-                              decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.white24),
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: AppColors.theme['tertiaryColor']),
-                              height: 50,
-                              width: 50,
-                              child: Icon(
-                                Icons.add,
-                                color: AppColors.theme['secondaryColor'],
-                                size: 25,
-                              )),
+                          InkWell(
+                            onTap: isSearching
+                                ? () {
+                                    setState(() {
+                                      isSearching = false;
+                                      searchField.text = "";
+                                    });
+                                  }
+                                : () {},
+                            child: Container(
+                                decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.white24),
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: AppColors.theme['tertiaryColor']),
+                                height: 50,
+                                width: 50,
+                                child: Icon(
+                                  isSearching
+                                      ? Icons.cancel_outlined
+                                      : Icons.add,
+                                  color: AppColors.theme['secondaryColor'],
+                                  size: 25,
+                                )),
+                          ),
                         ],
                       ),
                     ),
@@ -470,121 +489,207 @@ class _HomeScreenDesktopState extends State<HomeScreenDesktop> {
                                   ),
                                 ),
                               if (isProducts)
-                                ListView.builder(
-                                  shrinkWrap: true,
-                                  itemCount: isSearching
-                                      ? searchProductList.length
-                                      : productList.length,
-                                  physics: BouncingScrollPhysics(),
-                                  itemBuilder: (context, index) {
-                                    return InkWell(
-                                      onTap: () {
-                                        setState(() {
-                                          for (int i = 0;
-                                              i < productList.length;
-                                              i++) {
-                                            if (i == index) {
-                                              isProductClicked['product$i'] =
-                                                  true;
-                                              print(
-                                                  "#PDCT ${productList[i].name}");
-                                              currProduct = isSearching
-                                                  ? searchProductList[i]
-                                                  : productList[i];
-                                            } else {
-                                              isProductClicked['product$i'] =
-                                                  false;
-                                            }
-                                          }
-                                        });
-                                      },
-                                      child: ProductCard(
-                                        product: isSearching
-                                            ? searchProductList[index]
-                                            : productList[index],
-                                        isClicked:
-                                            isProductClicked['product$index'] ??
-                                                false,
+                                (isSearching && searchProductList.isEmpty)
+                                    ? Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: mq.height * 0.25),
+                                        child: Text(
+                                          "No Search Results",
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.white24),
+                                        ),
+                                      )
+                                    : ListView.builder(
+                                        shrinkWrap: true,
+                                        itemCount: isSearching
+                                            ? searchProductList.length
+                                            : productList.length,
+                                        physics: BouncingScrollPhysics(),
+                                        itemBuilder: (context, index) {
+                                          return InkWell(
+                                            onTap: () {
+                                              setState(() {
+                                                for (int i = 0;
+                                                    isSearching
+                                                        ? i <
+                                                            searchProductList
+                                                                .length
+                                                        : i <
+                                                            productList.length;
+                                                    i++) {
+                                                  if (i == index) {
+                                                    isSearching
+                                                        ? isSearchProductClicked[
+                                                            'product$i'] = true
+                                                        : isProductClicked[
+                                                            'product$i'] = true;
+                                                    print(
+                                                        "#PDCT ${productList[i].name}");
+                                                    currProduct = isSearching
+                                                        ? searchProductList[i]
+                                                        : productList[i];
+                                                  } else {
+                                                    isSearching
+                                                        ? isSearchProductClicked[
+                                                            'product$i'] = false
+                                                        : isProductClicked[
+                                                                'product$i'] =
+                                                            false;
+                                                  }
+                                                }
+                                              });
+                                            },
+                                            child: ProductCard(
+                                              product: isSearching
+                                                  ? searchProductList[index]
+                                                  : productList[index],
+                                              isClicked: isSearching
+                                                  ? (isSearchProductClicked[
+                                                          'product$index'] ??
+                                                      false)
+                                                  : (isProductClicked[
+                                                          'product$index'] ??
+                                                      false),
+                                            ),
+                                          );
+                                        },
                                       ),
-                                    );
-                                  },
-                                ),
                               if (isFacilities)
-                                ListView.builder(
-                                  shrinkWrap: true,
-                                  itemCount: isSearching
-                                      ? searchFacilityList.length
-                                      : facilityList.length,
-                                  physics: BouncingScrollPhysics(),
-                                  itemBuilder: (context, index) {
-                                    return InkWell(
-                                      onTap: () {
-                                        setState(() {
-                                          for (int i = 0;
-                                              i < facilityList.length;
-                                              i++) {
-                                            if (i == index) {
-                                              isFacilityClicked['facility$i'] =
-                                                  true;
-                                              print(
-                                                  "#FCLT ${facilityList[i].name}");
-                                              currFacility = facilityList[i];
-                                            } else {
-                                              isFacilityClicked['facility$i'] =
-                                                  false;
-                                            }
-                                          }
-                                        });
-                                      },
-                                      child: FacilityCard(
-                                        facility: isSearching
-                                            ? searchFacilityList[index]
-                                            : facilityList[index],
-                                        isClicked: isFacilityClicked[
-                                                'facility$index'] ??
-                                            false,
+                                (isSearching && searchFacilityList.isEmpty)
+                                    ? Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: mq.height * 0.25),
+                                        child: Text(
+                                          "No Search Results",
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.white24),
+                                        ),
+                                      )
+                                    : ListView.builder(
+                                        shrinkWrap: true,
+                                        itemCount: isSearching
+                                            ? searchFacilityList.length
+                                            : facilityList.length,
+                                        physics: BouncingScrollPhysics(),
+                                        itemBuilder: (context, index) {
+                                          return InkWell(
+                                            onTap: () {
+                                              setState(() {
+                                                for (int i = 0;
+                                                    isSearching
+                                                        ? i <
+                                                            searchFacilityList
+                                                                .length
+                                                        : i <
+                                                            facilityList.length;
+                                                    i++) {
+                                                  if (i == index) {
+                                                    isSearching
+                                                        ? (isSearchFacilityClicked[
+                                                                'facility$i'] =
+                                                            true)
+                                                        : (isFacilityClicked[
+                                                                'facility$i'] =
+                                                            true);
+                                                    print(
+                                                        "#PDCT ${facilityList[i].name}");
+                                                    currFacility = isSearching
+                                                        ? searchFacilityList[i]
+                                                        : facilityList[i];
+                                                  } else {
+                                                    isSearching
+                                                        ? (isSearchFacilityClicked[
+                                                                'facility$i'] =
+                                                            false)
+                                                        : (isFacilityClicked[
+                                                                'facility$i'] =
+                                                            false);
+                                                  }
+                                                }
+                                              });
+                                            },
+                                            child: FacilityCard(
+                                              facility: isSearching
+                                                  ? searchFacilityList[index]
+                                                  : facilityList[index],
+                                              isClicked: isSearching
+                                                  ? (isSearchFacilityClicked[
+                                                          'facility$index'] ??
+                                                      false)
+                                                  : (isFacilityClicked[
+                                                          'facility$index'] ??
+                                                      false),
+                                            ),
+                                          );
+                                        },
                                       ),
-                                    );
-                                  },
-                                ),
                               if (isClients)
-                                ListView.builder(
-                                  shrinkWrap: true,
-                                  itemCount: isSearching
-                                      ? searchClientsList.length
-                                      : clientList.length,
-                                  physics: BouncingScrollPhysics(),
-                                  itemBuilder: (context, index) {
-                                    return InkWell(
-                                      onTap: () {
-                                        setState(() {
-                                          for (int i = 0;
-                                              i < clientList.length;
-                                              i++) {
-                                            if (i == index) {
-                                              isClientClicked['client$i'] =
-                                                  true;
-                                              print(
-                                                  "#Clnt ${clientList[i].name}");
-                                              currClient = clientList[i];
-                                            } else {
-                                              isClientClicked['client$i'] =
-                                                  false;
-                                            }
-                                          }
-                                        });
-                                      },
-                                      child: ClientCard(
-                                        client: isSearching
-                                            ? searchClientsList[index]
-                                            : clientList[index],
-                                        isClicked:
-                                            isClientClicked['client$index'] ??
-                                                false,
+                                (isSearching && searchClientsList.isEmpty)
+                                    ? Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: mq.height * 0.25),
+                                        child: Text(
+                                          "No Search Results",
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.white24),
+                                        ),
+                                      )
+                                    : ListView.builder(
+                                        shrinkWrap: true,
+                                        itemCount: isSearching
+                                            ? searchClientsList.length
+                                            : clientList.length,
+                                        physics: BouncingScrollPhysics(),
+                                        itemBuilder: (context, index) {
+                                          return InkWell(
+                                            onTap: () {
+                                              setState(() {
+                                                for (int i = 0;
+                                                    isSearching
+                                                        ? i <
+                                                            searchClientsList
+                                                                .length
+                                                        : i < clientList.length;
+                                                    i++) {
+                                                  if (i == index) {
+                                                    isSearching
+                                                        ? isSearchClientClicked[
+                                                            'client$i'] = true
+                                                        : isClientClicked[
+                                                            'client$i'] = true;
+                                                    print(
+                                                        "#PDCT ${productList[i].name}");
+                                                    currClient = isSearching
+                                                        ? searchClientsList[i]
+                                                        : clientList[i];
+                                                  } else {
+                                                    isSearching
+                                                        ? isSearchClientClicked[
+                                                            'client$i'] = false
+                                                        : isClientClicked[
+                                                            'client$i'] = false;
+                                                  }
+                                                }
+                                              });
+                                            },
+                                            child: ClientCard(
+                                              client: isSearching
+                                                  ? searchClientsList[index]
+                                                  : clientList[index],
+                                              isClicked: isSearching
+                                                  ? (isSearchClientClicked[
+                                                          'client$index'] ??
+                                                      false)
+                                                  : (isClientClicked[
+                                                          'client$index'] ??
+                                                      false),
+                                            ),
+                                          );
+                                        },
                                       ),
-                                    );
-                                  },
-                                ),
                             ],
                           ),
                         ),
