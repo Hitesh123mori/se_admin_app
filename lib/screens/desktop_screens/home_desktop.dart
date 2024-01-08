@@ -104,6 +104,8 @@ class _HomeScreenDesktopState extends State<HomeScreenDesktop> {
   Map<String, bool> isFacilityClicked = {};
   Map<String, bool> isClientClicked = {};
 
+
+
   _HomeScreenDesktopState() {
     for (int i = 0; i < productList.length; i++) {
       isProductClicked['product$i'] = (i == 0);
@@ -124,6 +126,13 @@ class _HomeScreenDesktopState extends State<HomeScreenDesktop> {
 
   @override
   Widget build(BuildContext context) {
+    // clientList.forEach((element) {element.addToDB();});
+    // print(KClient.getList());
+    // facilityList.forEach((element) {element.addToDB();});
+    // print(Facility.getList());
+    // productList.forEach((element) {element.addToDB();});
+    // print(Product.getList());
+
     mq = MediaQuery.of(context).size;
     return MaterialApp(
       debugShowCheckedModeBanner: false,
