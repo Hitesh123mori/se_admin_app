@@ -30,6 +30,9 @@ class _LoginTextFieldState extends State<LoginTextField> {
       alignment: Alignment.center,
       padding: EdgeInsets.only(right: mq.width / 30),
       decoration: BoxDecoration(
+        border: Border.all(
+          color: Colors.white24
+        ),
         color: AppColors.theme['primaryColor'],
         borderRadius: BorderRadius.circular(10),
       ),
