@@ -50,10 +50,17 @@ class _HomeScreenDesktopState extends State<HomeScreenDesktop> {
     Product(name: "Jigs and Collets", imagePath: ""),
   ];
 
-  Product? currProduct ;
-  Facility? currFacility ;
-  KClient? currClient ;
+  Product? currProduct;
+  Facility? currFacility;
+  KClient? currClient;
 
+  // search lists
+
+  List<Product> searchProductList = [];
+  List<Facility> searchFacilityList = [];
+  List<KClient> searchClientsList = [];
+
+  bool isSearching = false;
 
   List<Facility> facilityList = [
     Facility(name: "CNC Milling centre", imagePath: "", discription: ""),
@@ -285,163 +292,318 @@ class _HomeScreenDesktopState extends State<HomeScreenDesktop> {
               SizedBox(width: mq.width * 0.007),
 
               // all main options tabs
-              Container(
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 2.0, vertical: 10),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        if (isInfo)
-                          InkWell(
-                            onTap: () {
-                              setState(() {
-                                isDirector = false;
-                                isContact = false;
-                                isAbout = true;
-                              });
-                            },
-                            child: Options(
-                              optionName: 'About Us',
-                              isClicked: isAbout,
+              Column(
+                children: [
+                  if (!isInfo)
+                    Padding(
+                      padding: EdgeInsets.only(bottom: mq.width * 0.007),
+                      child: Row(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(
+                              right: mq.width * 0.003,
+                            ),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: AppColors.theme['primaryColor'],
+                                border: Border.all(
+                                  color: Colors.white24,
+                                ),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              constraints:
+                                  BoxConstraints(minWidth: 200, minHeight: 50),
+                              width: 200,
+                              height: 50,
+                              child: Center(
+                                child: Container(
+                                  width: 200,
+                                  height: 50,
+                                  child: Center(
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          if (isProducts) isSearching = false;
+                                          isSearching = false;
+                                          isSearching = !isSearching;
+                                          if (isFacilities) isSearching = false;
+                                          isSearching = false;
+                                          isSearching = !isSearching;
+                                          if (isClients) isSearching = false;
+                                          isSearching = false;
+                                          isSearching = !isSearching;
+                                        });
+                                      },
+                                      child: TextFormField(
+                                        enabled: (isSearching) ? true : false,
+                                        onChanged: (val) {
+                                          if (isProducts)
+                                            searchProductList.clear();
+                                          if (isFacilities)
+                                            searchFacilityList.clear();
+                                          if (isClients)
+                                            searchClientsList.clear();
+
+                                          if (isProducts)
+                                            for (var i in productList) {
+                                              if (i.name.toLowerCase().contains(
+                                                  val.toLowerCase())) {
+                                                searchProductList.add(i);
+                                              }
+                                              setState(() {
+                                                ;
+                                              });
+                                            }
+
+                                          if (isFacilities)
+                                            for (var i in facilityList) {
+                                              if (i.name.toLowerCase().contains(
+                                                  val.toLowerCase())) {
+                                                searchFacilityList.add(i);
+                                              }
+                                              setState(() {
+                                                ;
+                                              });
+                                            }
+
+                                          if (isClients)
+                                            for (var i in clientList) {
+                                              if (i.name.toLowerCase().contains(
+                                                  val.toLowerCase())) {
+                                                searchClientsList.add(i);
+                                              }
+                                              setState(() {
+                                                ;
+                                              });
+                                            }
+                                        },
+                                        cursorColor:
+                                            AppColors.theme['highlightColor'],
+                                        style: TextStyle(
+                                            color: AppColors
+                                                .theme['secondaryColor']),
+                                        textAlign: TextAlign.center,
+                                        autocorrect: true,
+                                        autovalidateMode:
+                                            AutovalidateMode.always,
+                                        decoration: InputDecoration(
+                                          hintText: 'Search Here',
+                                          hintStyle: TextStyle(
+                                              color: AppColors
+                                                  .theme['secondaryColor']),
+                                          border: OutlineInputBorder(
+                                            borderSide: BorderSide.none,
+                                          ),
+                                          filled: true,
+                                          fillColor: Colors.transparent,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
-                        if (isInfo)
-                          InkWell(
-                            onTap: () {
-                              setState(() {
-                                isDirector = false;
-                                isContact = true;
-                                isAbout = false;
-                              });
-                            },
-                            child: Options(
-                              optionName: 'Contact Details',
-                              isClicked: isContact,
-                            ),
-                          ),
-                        if (isInfo)
-                          InkWell(
-                            onTap: () {
-                              setState(() {
-                                isDirector = true;
-                                isContact = false;
-                                isAbout = false;
-                              });
-                            },
-                            child: Options(
-                              optionName: 'Director info',
-                              isClicked: isDirector,
-                            ),
-                          ),
-                        if (isProducts)
-                          ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: productList.length,
-                            physics: NeverScrollableScrollPhysics(),
-                            itemBuilder: (context, index) {
-                              return InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    for (int i = 0;
-                                        i < productList.length;
-                                        i++) {
-                                      if (i == index) {
-                                        isProductClicked['product$i'] = true;
-                                        print("#PDCT ${productList[i].name}");
-                                         currProduct = productList[i] ;
-                                      } else {
-                                        isProductClicked['product$i'] = false;
-                                      }
-                                    }
-                                  });
-                                },
-                                child: ProductCard(
-                                  product: productList[index],
-                                  isClicked:
-                                      isProductClicked['product$index'] ??
-                                          false,
+                          Container(
+                              decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.white24),
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: AppColors.theme['tertiaryColor']),
+                              height: 50,
+                              width: 50,
+                              child: Icon(
+                                Icons.add,
+                                color: AppColors.theme['secondaryColor'],
+                                size: 25,
+                              )),
+                        ],
+                      ),
+                    ),
+                  Expanded(
+                    child: Container(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 2.0, vertical: 10),
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              if (isInfo)
+                                InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      isDirector = false;
+                                      isContact = false;
+                                      isAbout = true;
+                                    });
+                                  },
+                                  child: Options(
+                                    optionName: 'About Us',
+                                    isClicked: isAbout,
+                                  ),
                                 ),
-                              );
-                            },
-                          ),
-                        if (isFacilities)
-                          ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: facilityList.length,
-                            physics: NeverScrollableScrollPhysics(),
-                            itemBuilder: (context, index) {
-                              return InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    for (int i = 0;
-                                        i < facilityList.length;
-                                        i++) {
-                                      if (i == index) {
-                                        isFacilityClicked['facility$i'] = true;
-                                        print("#FCLT ${facilityList[i].name}") ;
-                                        currFacility = facilityList[i] ;
-                                      } else {
-                                        isFacilityClicked['facility$i'] = false;
-                                      }
-                                    }
-                                  });
-                                },
-                                child: FacilityCard(
-                                  facility: facilityList[index],
-                                  isClicked:
-                                      isFacilityClicked['facility$index'] ??
-                                          false,
+                              if (isInfo)
+                                InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      isDirector = false;
+                                      isContact = true;
+                                      isAbout = false;
+                                    });
+                                  },
+                                  child: Options(
+                                    optionName: 'Contact Details',
+                                    isClicked: isContact,
+                                  ),
                                 ),
-                              );
-                            },
-                          ),
-                        if (isClients)
-                          ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: clientList.length,
-                            physics: NeverScrollableScrollPhysics(),
-                            itemBuilder: (context, index) {
-                              return InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    for (int i = 0;
-                                        i < clientList.length;
-                                        i++) {
-                                      if (i == index) {
-                                        isClientClicked['client$i'] = true;
-                                        print("#Clnt ${clientList[i].name}") ;
-                                        currClient = clientList[i] ;
-                                      } else {
-                                        isClientClicked['client$i'] = false;
-                                      }
-                                    }
-                                  });
-                                },
-                                child: ClientCard(
-                                  client: clientList[index],
-                                  isClicked:
-                                      isClientClicked['client$index'] ?? false,
+                              if (isInfo)
+                                InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      isDirector = true;
+                                      isContact = false;
+                                      isAbout = false;
+                                    });
+                                  },
+                                  child: Options(
+                                    optionName: 'Director info',
+                                    isClicked: isDirector,
+                                  ),
                                 ),
-                              );
-                            },
+                              if (isProducts)
+                                ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount: isSearching
+                                      ? searchProductList.length
+                                      : productList.length,
+                                  physics: BouncingScrollPhysics(),
+                                  itemBuilder: (context, index) {
+                                    return InkWell(
+                                      onTap: () {
+                                        setState(() {
+                                          for (int i = 0;
+                                              i < productList.length;
+                                              i++) {
+                                            if (i == index) {
+                                              isProductClicked['product$i'] =
+                                                  true;
+                                              print(
+                                                  "#PDCT ${productList[i].name}");
+                                              currProduct = isSearching
+                                                  ? searchProductList[i]
+                                                  : productList[i];
+                                            } else {
+                                              isProductClicked['product$i'] =
+                                                  false;
+                                            }
+                                          }
+                                        });
+                                      },
+                                      child: ProductCard(
+                                        product: isSearching
+                                            ? searchProductList[index]
+                                            : productList[index],
+                                        isClicked:
+                                            isProductClicked['product$index'] ??
+                                                false,
+                                      ),
+                                    );
+                                  },
+                                ),
+                              if (isFacilities)
+                                ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount: isSearching
+                                      ? searchFacilityList.length
+                                      : facilityList.length,
+                                  physics: BouncingScrollPhysics(),
+                                  itemBuilder: (context, index) {
+                                    return InkWell(
+                                      onTap: () {
+                                        setState(() {
+                                          for (int i = 0;
+                                              i < facilityList.length;
+                                              i++) {
+                                            if (i == index) {
+                                              isFacilityClicked['facility$i'] =
+                                                  true;
+                                              print(
+                                                  "#FCLT ${facilityList[i].name}");
+                                              currFacility = facilityList[i];
+                                            } else {
+                                              isFacilityClicked['facility$i'] =
+                                                  false;
+                                            }
+                                          }
+                                        });
+                                      },
+                                      child: FacilityCard(
+                                        facility: isSearching
+                                            ? searchFacilityList[index]
+                                            : facilityList[index],
+                                        isClicked: isFacilityClicked[
+                                                'facility$index'] ??
+                                            false,
+                                      ),
+                                    );
+                                  },
+                                ),
+                              if (isClients)
+                                ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount: isSearching
+                                      ? searchClientsList.length
+                                      : clientList.length,
+                                  physics: BouncingScrollPhysics(),
+                                  itemBuilder: (context, index) {
+                                    return InkWell(
+                                      onTap: () {
+                                        setState(() {
+                                          for (int i = 0;
+                                              i < clientList.length;
+                                              i++) {
+                                            if (i == index) {
+                                              isClientClicked['client$i'] =
+                                                  true;
+                                              print(
+                                                  "#Clnt ${clientList[i].name}");
+                                              currClient = clientList[i];
+                                            } else {
+                                              isClientClicked['client$i'] =
+                                                  false;
+                                            }
+                                          }
+                                        });
+                                      },
+                                      child: ClientCard(
+                                        client: isSearching
+                                            ? searchClientsList[index]
+                                            : clientList[index],
+                                        isClicked:
+                                            isClientClicked['client$index'] ??
+                                                false,
+                                      ),
+                                    );
+                                  },
+                                ),
+                            ],
                           ),
-                      ],
+                        ),
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.theme['tertiaryColor'],
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                          color: Colors.white24,
+                        ),
+                      ),
+                      constraints: BoxConstraints(
+                        minWidth: 250,
+                      ),
+                      width: mq.width * 0.15,
+                      height: mq.height * 1,
                     ),
                   ),
-                ),
-                decoration: BoxDecoration(
-                  color: AppColors.theme['tertiaryColor'],
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(
-                    color: Colors.white24,
-                  ),
-                ),
-                constraints: BoxConstraints(
-                  minWidth: 250,
-                ),
-                width: mq.width * 0.15,
-                height: mq.height * 1,
+                ],
               ),
               SizedBox(
                 width: mq.width * 0.007,
@@ -465,9 +627,18 @@ class _HomeScreenDesktopState extends State<HomeScreenDesktop> {
                           if (isDirector && isInfo) DirectorInfoDesktop(),
                           if (isAbout && isInfo) AboutDesktop(),
                           if (isContact && isInfo) ContactDetailsDesktop(),
-                          if(isProducts)  ProductDetailDesktop(product: currProduct!,) ,
-                          if(isFacilities)  FacilityDetailDesktop(facility: currFacility!,) ,
-                          if(isClients)  ClientsDetailDesktop(client: currClient!,) ,
+                          if (isProducts)
+                            ProductDetailDesktop(
+                              product: currProduct!,
+                            ),
+                          if (isFacilities)
+                            FacilityDetailDesktop(
+                              facility: currFacility!,
+                            ),
+                          if (isClients)
+                            ClientsDetailDesktop(
+                              client: currClient!,
+                            ),
                         ],
                       ),
                     ),
