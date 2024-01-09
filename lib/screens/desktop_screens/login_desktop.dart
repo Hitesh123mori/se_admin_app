@@ -3,6 +3,7 @@ import 'package:se_admin_app/screens/desktop_screens/home_desktop.dart';
 import 'package:se_admin_app/utils/colors.dart';
 import '../../main.dart';
 import '../../utils/widgets/login_textfield.dart';
+import 'build_home_desktop/value_passing_to_home.dart';
 
 class LoginScreenDesktop extends StatefulWidget {
   const LoginScreenDesktop({super.key});
@@ -92,7 +93,7 @@ class _LoginScreenDesktopState extends State<LoginScreenDesktop> {
                       splashColor: Colors.transparent,
                       highlightColor: Colors.transparent,
                       onTap: () {
-                        Navigator.push(context,MaterialPageRoute(builder: (context)=>HomeScreenDesktop()));
+                        Navigator.push(context,MaterialPageRoute(builder: (context)=>ValuePassingDesktop()));
                         },
                       child: Container(
                         constraints: BoxConstraints(

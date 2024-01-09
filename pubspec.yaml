@@ -36,6 +36,7 @@ dependencies:
   firebase_auth:
   cloud_firestore:
   shimmer:
+  provider:
 #  beamer: ^1.5.6
 #  collection: ^1.18.0
 

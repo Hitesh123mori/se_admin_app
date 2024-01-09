@@ -1,6 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:se_admin_app/platform_define.dart';
+import 'constant/constants_provider.dart';
 import 'firebase_options.dart';
 
 
@@ -11,7 +13,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const AdminApp());
+  runApp(MultiProvider(providers: [ChangeNotifierProvider(create: (context)=>ConstantsProvider())], child: AdminApp()));
 }
 
 class AdminApp extends StatefulWidget {
