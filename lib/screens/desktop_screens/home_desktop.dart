@@ -37,6 +37,13 @@ class _HomeScreenDesktopState extends State<HomeScreenDesktop> {
 
   @override
   Widget build(BuildContext context) {
+    // clientList.forEach((element) {element.addToDB();});
+    // print(KClient.getList());
+    // facilityList.forEach((element) {element.addToDB();});
+    // print(Facility.getList());
+    // productList.forEach((element) {element.addToDB();});
+    // print(Product.getList());
+
     mq = MediaQuery.of(context).size;
     return Consumer<ConstantsProvider>(
       builder: (context, value, child) {
