@@ -39,8 +39,7 @@ class Product {
         list.add(Product.fromJson(map));
       });
       return list;
-    });
-    return null;
+    }).onError((error, stackTrace) => []);
   }
 
   bool addToDB(){
