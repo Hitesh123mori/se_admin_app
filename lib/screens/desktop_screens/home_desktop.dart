@@ -236,7 +236,7 @@ class _HomeScreenDesktopState extends State<HomeScreenDesktop> {
                                     },
                                     child: Options(
                                       optionName: 'About Us',
-                                      isClicked: value.isAbout,
+                                      // isClicked: value.isAbout,
                                     ),
                                   ),
                                 if (value.isInfo)
@@ -250,7 +250,7 @@ class _HomeScreenDesktopState extends State<HomeScreenDesktop> {
                                     },
                                     child: Options(
                                       optionName: 'Contact Details',
-                                      isClicked: value.isContact,
+                                      // isClicked: value.isContact,
                                     ),
                                   ),
                                 if (value.isInfo)
@@ -264,7 +264,7 @@ class _HomeScreenDesktopState extends State<HomeScreenDesktop> {
                                     },
                                     child: Options(
                                       optionName: 'Director info',
-                                      isClicked: value.isDirector,
+                                      // isClicked: value.isDirector,
                                     ),
                                   ),
                                 if (value.isProducts)
@@ -393,13 +393,13 @@ class _HomeScreenDesktopState extends State<HomeScreenDesktop> {
                                                 facility: isSearching
                                                     ? value.searchFacilityList[index]
                                                     : value.facilityList[index],
-                                                isClicked: isSearching
-                                                    ? (value.isSearchFacilityClicked[
-                                                            'facility$index'] ??
-                                                        false)
-                                                    : (value.isFacilityClicked[
-                                                            'facility$index'] ??
-                                                        false),
+                                                // isClicked: isSearching
+                                                //     ? (value.isSearchFacilityClicked[
+                                                //             'facility$index'] ??
+                                                //         false)
+                                                //     : (value.isFacilityClicked[
+                                                //             'facility$index'] ??
+                                                //         false),
                                               ),
                                             );
                                           },
@@ -457,13 +457,13 @@ class _HomeScreenDesktopState extends State<HomeScreenDesktop> {
                                                 client: isSearching
                                                     ? value.searchClientsList[index]
                                                     : value.clientList[index],
-                                                isClicked: isSearching
-                                                    ? (value.isSearchClientClicked[
-                                                            'client$index'] ??
-                                                        false)
-                                                    : (value.isClientClicked[
-                                                            'client$index'] ??
-                                                        false), id: "client$index"
+                                                // isClicked: isSearching
+                                                //     ? (value.isSearchClientClicked[
+                                                //             'client$index'] ??
+                                                //         false)
+                                                //     : (value.isClientClicked[
+                                                //             'client$index'] ??
+                                                //         false), id: "client$index"
                                               ),
                                             );
                                           },

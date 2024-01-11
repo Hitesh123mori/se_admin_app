@@ -28,7 +28,7 @@ class Product {
   }
 
   static Future<List<Product>>? getList(){
-
+    print("fetching products ... ");
     _collectionRef.get().then((value) {
       List<Product> list = [];
 
@@ -38,6 +38,7 @@ class Product {
         print(map);
         list.add(Product.fromJson(map));
       });
+      print("complete.");
       return list;
     }).onError((error, stackTrace) => []);
   }
