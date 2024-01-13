@@ -19,6 +19,7 @@ class _ProductOptionsColState extends State<ProductOptionsCol> {
   bool isSearching = false;
   List<Product> searchProduct = [];
   List<Product> productList = [];
+  TextEditingController _controller = TextEditingController() ;
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +48,7 @@ class _ProductOptionsColState extends State<ProductOptionsCol> {
                     child: Container(
                       child: Center(
                         child: TextFormField(
+                          controller: _controller,
                           onTap: () {
                             setState(() {
                               isSearching = true;
@@ -88,6 +90,7 @@ class _ProductOptionsColState extends State<ProductOptionsCol> {
                   onTap: () {
                     setState(() {
                       isSearching = false;
+                      _controller.text = '' ;
                     });
                   },
                   child: Container(
