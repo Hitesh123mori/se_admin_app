@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart' ;
-import 'package:se_admin_app/screens/desktop_screens/home_desktop.dart';
 import 'package:se_admin_app/screens/desktop_screens/splash_screen_dekstop.dart';
 import 'package:se_admin_app/screens/mobile_screens/login_mobile.dart';
 
