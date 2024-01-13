@@ -7,7 +7,6 @@ class MainOptionProvider extends ChangeNotifier{
   "facilities": false,
   "products": false,
   "clients": false,
-
   };
 
   String current = "info";

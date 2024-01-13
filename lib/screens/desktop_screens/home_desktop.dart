@@ -77,17 +77,17 @@ class _HomeScreenDesktopState extends State<HomeScreenDesktop> {
                                 right: mq.width * 0.007,
                               ),
                               child: Container(
-                                decoration: BoxDecoration(
-                                  color: AppColors.theme['primaryColor'],
-                                  border: Border.all(
-                                    color: Colors.white24,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.theme['primaryColor'],
+                                    border: Border.all(
+                                      color: Colors.white24,
+                                    ),
+                                    borderRadius: BorderRadius.circular(10),
                                   ),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                constraints:
-                                    BoxConstraints(minWidth: 190, minHeight: 50),
-                                width: 190,
-                                height: 50,
+                                  constraints:
+                                      BoxConstraints(minWidth: 190, minHeight: 50),
+                                  width: 190,
+                                  height: 50,
                                 child: Center(
                                   child: Container(
                                     width: 200,

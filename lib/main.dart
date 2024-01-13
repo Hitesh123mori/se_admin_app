@@ -52,7 +52,7 @@ class _AdminAppState extends State<AdminApp> {
 
       // home: PlatformDefine(),
 
-      home: HomeScreenDesktop2(),
+      home: PlatformDefine(),
     );
 
   }
