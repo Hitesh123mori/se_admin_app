@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:se_admin_app/Providers/FacilityProvider.dart';
 import 'package:se_admin_app/models/facility.dart';
-import 'package:se_admin_app/models/product.dart';
 
 import '../colors.dart';
 
 class FacilityCard extends StatefulWidget {
   final Facility facility ;
-  FacilityCard({super.key, required this.facility});
+  bool isClicked = false;
+  FacilityCard({super.key, required this.facility, required  this.isClicked});
 
   @override
   State<FacilityCard> createState() => _FacilityCardState();
@@ -20,8 +20,8 @@ class _FacilityCardState extends State<FacilityCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<FacilityProvider>(builder: (context, facility, child){
-
+    print("#click${widget.isClicked}");
+    return Consumer<FacilityProvider>(builder: (context, facilityPro, child){
       return MouseRegion(
         onEnter: (_) {
           setState(() {
@@ -35,7 +35,10 @@ class _FacilityCardState extends State<FacilityCard> {
         },
         child: InkWell(
           onTap: (){
-            facility.updateCurrent(widget.facility);
+            setState(() {
+              facilityPro.updateCurrent(widget.facility);
+              print("enter") ;
+            });
           },
           child: Container(
             height: 55,
@@ -44,7 +47,7 @@ class _FacilityCardState extends State<FacilityCard> {
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: [
-                  if (widget.facility.name == facility.current!.name)
+                  if (widget.isClicked)
                     Container(
                       height: 30,
                       width: 5,

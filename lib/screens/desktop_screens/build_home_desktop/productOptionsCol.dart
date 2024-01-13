@@ -19,6 +19,7 @@ class _ProductOptionsColState extends State<ProductOptionsCol> {
   bool isSearching = false;
   List<Product> searchProduct = [];
   List<Product> productList = [];
+  TextEditingController _controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +48,7 @@ class _ProductOptionsColState extends State<ProductOptionsCol> {
                     child: Container(
                       child: Center(
                         child: TextFormField(
+                          controller: _controller,
                           onTap: () {
                             setState(() {
                               isSearching = true;
@@ -56,8 +58,8 @@ class _ProductOptionsColState extends State<ProductOptionsCol> {
                             setState(() {
                               searchProduct = productList
                                   .where((product) => product.name
-                                  .toLowerCase()
-                                  .contains(value.toLowerCase()))
+                                      .toLowerCase()
+                                      .contains(value.toLowerCase()))
                                   .toList();
                             });
                           },
@@ -88,6 +90,7 @@ class _ProductOptionsColState extends State<ProductOptionsCol> {
                   onTap: () {
                     setState(() {
                       isSearching = false;
+                      _controller.text = '';
                     });
                   },
                   child: Container(
@@ -99,9 +102,7 @@ class _ProductOptionsColState extends State<ProductOptionsCol> {
                     height: 50,
                     width: 50,
                     child: Icon(
-                      isSearching
-                          ? Icons.cancel_outlined
-                          : Icons.add,
+                      isSearching ? Icons.cancel_outlined : Icons.add,
                       color: AppColors.theme['secondaryColor'],
                       size: 25,
                     ),
@@ -137,10 +138,9 @@ class _ProductOptionsColState extends State<ProductOptionsCol> {
                     );
                   }
                   final data = snapshot.data?.docs;
-                  productList = data
-                      ?.map((e) => Product.fromJson(e.data()))
-                      .toList() ??
-                      [];
+                  productList =
+                      data?.map((e) => Product.fromJson(e.data())).toList() ??
+                          [];
 
                   if (productList?.isEmpty ?? true) {
                     return Center(
@@ -173,10 +173,8 @@ class _ProductOptionsColState extends State<ProductOptionsCol> {
                               ? searchProduct[index]
                               : productList[index],
                           isClicked: isSearching
-                              ? searchProduct[index].id ==
-                              product.current?.id
-                              : productList[index].id ==
-                              product.current?.id,
+                              ? searchProduct[index].id == product.current?.id
+                              : productList[index].id == product.current?.id,
                         );
                       },
                     ),

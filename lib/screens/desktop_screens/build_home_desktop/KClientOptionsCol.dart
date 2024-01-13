@@ -22,6 +22,7 @@ class _KClientOptionsColState extends State<KClientOptionsCol> {
   bool isSearching = false;
   List<KClient> searchClient = [];
   List<KClient> clientList = [];
+  TextEditingController _controller = TextEditingController() ;
 
   @override
   Widget build(BuildContext context) {
@@ -53,6 +54,7 @@ class _KClientOptionsColState extends State<KClientOptionsCol> {
                         height: 50,
                         child: Center(
                           child: TextFormField(
+                            controller: _controller,
                             onTap: () {
                               setState(() {
                                 isSearching = true;
@@ -90,7 +92,14 @@ class _KClientOptionsColState extends State<KClientOptionsCol> {
                   ),
                 ),
                 InkWell(
-                  onTap: () {},
+                  onTap: isSearching ? (){
+                    setState(() {
+                      isSearching = false ;
+                      _controller.text = '' ;
+
+                    });
+                  }:
+                      () {},
                   child: Container(
                       decoration: BoxDecoration(
                           border: Border.all(color: Colors.white24),
@@ -99,6 +108,7 @@ class _KClientOptionsColState extends State<KClientOptionsCol> {
                       height: 50,
                       width: 50,
                       child: Icon(
+                        isSearching ?Icons.cancel_outlined :
                         Icons.add,
                         color: AppColors.theme['secondaryColor'],
                         size: 25,
