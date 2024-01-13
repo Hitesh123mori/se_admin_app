@@ -3,7 +3,6 @@ import 'package:se_admin_app/apis/FirebaseAPI.dart';
 class Product {
   static final _collectionRef = FirebaseAPI.dbAPI.collection("products");
 
-
   Product({
     required this.name,
     required this.imagePath,
