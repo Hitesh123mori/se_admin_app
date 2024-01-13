@@ -36,7 +36,6 @@ class _ProductCardState extends State<ProductCard> {
           onTap: (){
             setState(() {
             product.updateCurrent(widget.product);
-              print("#pc ${widget.product.id}");
             });
           },
           child: Container(

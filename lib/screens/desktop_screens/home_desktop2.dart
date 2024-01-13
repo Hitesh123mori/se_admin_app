@@ -52,15 +52,15 @@ class _HomeScreenDesktop2State extends State<HomeScreenDesktop2> {
                 children: [
                   MainMenubarDesktop(),
                   SizedBox(width: mq.width * 0.007),
-                  if (mainOp.current == "info") const InfoOptionsCol(),
-                  if (mainOp.current == "products") const ProductOptionsCol(),
-                  if (mainOp.current == "clients") const KClientOptionsCol(),
-                  if (mainOp.current == "facilities") const FacilityOptionsCol(),
+                  if (mainOp.current == "Primary Information") const InfoOptionsCol(),
+                  if (mainOp.current == "Products") const ProductOptionsCol(),
+                  if (mainOp.current == "Facilities") const FacilityOptionsCol(),
+                  if (mainOp.current == "Clients") const KClientOptionsCol(),
                   SizedBox(width: mq.width * 0.007,),
                   Expanded(
                     child: Column(
                       children: [
-                        if (mainOp.current != "info")
+                        if (mainOp.current != "Primary Information")
                           Padding(
                             padding: EdgeInsets.only(
                                 right: mq.width * 0.007, bottom: mq.width * 0.007),
@@ -79,7 +79,7 @@ class _HomeScreenDesktop2State extends State<HomeScreenDesktop2> {
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        if (mainOp.current == "products")
+                                        if (mainOp.current == "Products")
                                           Expanded(
                                             child: Container(
                                               width: 250,
@@ -94,7 +94,7 @@ class _HomeScreenDesktop2State extends State<HomeScreenDesktop2> {
                                               ),
                                             ),
                                           ),
-                                        if (mainOp.current == "facilities")
+                                        if (mainOp.current == "Facilities")
                                           Expanded(
                                             child: Container(
                                               width: 250,
@@ -109,7 +109,7 @@ class _HomeScreenDesktop2State extends State<HomeScreenDesktop2> {
                                               ),
                                             ),
                                           ),
-                                        if (mainOp.current == "clients")
+                                        if (mainOp.current == "Clients")
                                           Expanded(
                                             child: Container(
                                               width: 250,
@@ -174,18 +174,18 @@ class _HomeScreenDesktop2State extends State<HomeScreenDesktop2> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    if (infoPro.current == "director" && mainOp.current == "info") DirectorInfoDesktop(),
-                                    if (infoPro.current == "aboutUs" && mainOp.current == "info") AboutDesktop(),
-                                    if (infoPro.current == "contact" && mainOp.current == "info") ContactDetailsDesktop(),
-                                    if (mainOp.current == "products")
+                                    if (infoPro.current == "Director Information" && mainOp.current == "Primary Information") DirectorInfoDesktop(),
+                                    if (infoPro.current == "About Us" && mainOp.current == "Primary Information") AboutDesktop(),
+                                    if (infoPro.current == "Contact Us" && mainOp.current == "Primary Information") ContactDetailsDesktop(),
+                                    if (mainOp.current == "Products")
                                       ProductDetailDesktop(
                                         product: productPro.current ?? Product(name: '', imagePath: ''),
                                       ),
-                                    if (mainOp.current == "facilities")
+                                    if (mainOp.current == "Facilities")
                                       FacilityDetailDesktop(
                                         facility: facilityPro.current ?? Facility(name: '', imagePath: '', discription: ''),
                                       ),
-                                    if (mainOp.current == "clients")
+                                    if (mainOp.current == "Clients")
                                       ClientsDetailDesktop(
                                         client: clientPro.current ?? KClient(name: '', imagePath: ''),
                                       ),

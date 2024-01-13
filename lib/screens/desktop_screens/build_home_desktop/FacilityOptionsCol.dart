@@ -1,12 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:se_admin_app/Providers/FacilityProvider.dart';
-
 import 'package:se_admin_app/main.dart';
 import 'package:se_admin_app/models/facility.dart';
 import 'package:se_admin_app/utils/colors.dart';
-
+import '../../../Providers/FacilityProvider.dart';
 import '../../../utils/widgets/facility_card.dart';
 
 class FacilityOptionsCol extends StatefulWidget {
@@ -17,12 +15,14 @@ class FacilityOptionsCol extends StatefulWidget {
 }
 
 class _FacilityOptionsColState extends State<FacilityOptionsCol> {
-  String searchText = "";
-  bool firstTimeLoad = true;
+  bool isSearching = false;
+  List<Facility> searchFacility = [];
+  List<Facility> facilityList = [];
+  TextEditingController _controller = TextEditingController() ;
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<FacilityProvider>(builder: (context, facility, child){
+    return Consumer<FacilityProvider>(builder: (context, facilityPro, child) {
       return Column(
         children: [
           Padding(
@@ -41,8 +41,7 @@ class _FacilityOptionsColState extends State<FacilityOptionsCol> {
                       ),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    constraints:
-                    BoxConstraints(minWidth: 190, minHeight: 50),
+                    constraints: BoxConstraints(minWidth: 190, minHeight: 50),
                     width: 190,
                     height: 50,
                     child: Center(
@@ -50,34 +49,37 @@ class _FacilityOptionsColState extends State<FacilityOptionsCol> {
                         width: 200,
                         height: 50,
                         child: Center(
-                          child: GestureDetector(
-                            child: TextFormField(
-                              onChanged: (value){
-                                setState(() {
-                                  searchText = value; // Convert to lowercase
-                                  firstTimeLoad = true;
-                                  print("===================================");
-                                });
-                              },
-                              cursorColor: AppColors.theme['highlightColor'],
-                              style: TextStyle(
-                                  color: AppColors
-                                      .theme['secondaryColor']),
-                              textAlign: TextAlign.center,
-                              autocorrect: true,
-                              autovalidateMode:
-                              AutovalidateMode.always,
-                              decoration: InputDecoration(
-                                hintText: 'Search Here',
-                                hintStyle: TextStyle(
-                                    color: AppColors
-                                        .theme['secondaryColor']),
-                                border: OutlineInputBorder(
-                                  borderSide: BorderSide.none,
-                                ),
-                                filled: true,
-                                fillColor: Colors.transparent,
+                          child: TextFormField(
+                            controller: _controller,
+                            onTap: () {
+                              setState(() {
+                                isSearching = true;
+                              });
+                            },
+                            onChanged: (value) {
+                              setState(() {
+                                searchFacility = facilityList
+                                    .where((facility) => facility.name
+                                    .toLowerCase()
+                                    .contains(value.toLowerCase()))
+                                    .toList();
+                              });
+                            },
+                            cursorColor: AppColors.theme['highlightColor'],
+                            style: TextStyle(
+                                color: AppColors.theme['secondaryColor']),
+                            textAlign: TextAlign.center,
+                            autocorrect: true,
+                            autovalidateMode: AutovalidateMode.always,
+                            decoration: InputDecoration(
+                              hintText: 'Search Here',
+                              hintStyle: TextStyle(
+                                  color: AppColors.theme['secondaryColor']),
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide.none,
                               ),
+                              filled: true,
+                              fillColor: Colors.transparent,
                             ),
                           ),
                         ),
@@ -86,7 +88,14 @@ class _FacilityOptionsColState extends State<FacilityOptionsCol> {
                   ),
                 ),
                 InkWell(
-                  onTap: () {},
+                  onTap: isSearching ? (){
+                    setState(() {
+                      isSearching = false ;
+                      _controller.text = '' ;
+
+                    });
+                  }:
+                      () {},
                   child: Container(
                       decoration: BoxDecoration(
                           border: Border.all(color: Colors.white24),
@@ -95,6 +104,7 @@ class _FacilityOptionsColState extends State<FacilityOptionsCol> {
                       height: 50,
                       width: 50,
                       child: Icon(
+                        isSearching ?Icons.cancel_outlined :
                         Icons.add,
                         color: AppColors.theme['secondaryColor'],
                         size: 25,
@@ -120,39 +130,51 @@ class _FacilityOptionsColState extends State<FacilityOptionsCol> {
               child: StreamBuilder(
                 stream: FirebaseFirestore.instance
                     .collection('facilities')
-                    .where('name',
-                    isGreaterThanOrEqualTo: searchText)
-                    .where('name', isLessThan: '${searchText}z')
                     .snapshots(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
-                    return const CircularProgressIndicator();
+                    return Center(
+                      child: CircularProgressIndicator(
+                        color: AppColors.theme['highlightColor'],
+                      ),
+                    );
                   }
-                  var documents = snapshot.data?.docs;
-                  print("#doc: ${documents!.first['name']}");
+                  final data = snapshot.data?.docs;
+                  facilityList = data?.map((e) => Facility.fromJson(e.data())).toList() ?? [];
 
-                  if(documents.isEmpty){
-                    return const Text("No match found", style: TextStyle(color: Colors.white),);
+                  if (facilityList?.isEmpty ?? true) {
+                    return Center(
+                      child: Text(
+                        "No facility found",
+                        style: TextStyle(color: Colors.white60),
+                      ),
+                    );
                   }
-
-                  if(firstTimeLoad) {
-                    facility.current = Facility.fromJson(documents.first.data());
-                    if(facility.current!.name.contains(searchText)) firstTimeLoad = false;
+                  if (isSearching && searchFacility.isEmpty) {
+                    return Center(
+                      child: Text(
+                        "No search results found",
+                        style: TextStyle(color: Colors.white60),
+                      ),
+                    );
                   }
-
-                  print("#cp: ${facility.current?.id}");
-
                   return SizedBox(
                     height: mq.height,
                     child: ListView.builder(
                       shrinkWrap: true,
-                      physics: const BouncingScrollPhysics(),
-                      itemCount: documents.length,
+                      physics: BouncingScrollPhysics(),
+                      itemCount: isSearching
+                          ? searchFacility.length
+                          : facilityList?.length ?? 0,
                       itemBuilder: (context, index) {
-                        var document = documents[index];
-                        var obj = Facility.fromJson(document.data());
-                        // Build your UI here using the document data
-                        return FacilityCard(facility: obj);
+                        return FacilityCard(
+                          facility: isSearching
+                              ? searchFacility[index]
+                              : facilityList[index],
+                          isClicked: isSearching
+                              ? searchFacility[index].id == facilityPro.current?.id
+                              : facilityList[index].id == facilityPro.current?.id,
+                        );
                       },
                     ),
                   );

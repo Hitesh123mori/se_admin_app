@@ -3,13 +3,13 @@ import 'package:flutter/widgets.dart';
 class MainOptionProvider extends ChangeNotifier{
 
   Map<String, bool> mainOptions = {
-  "info": true,
-  "facilities": false,
-  "products": false,
-  "clients": false,
+  "Primary Information": true,
+  "Products": false,
+  "Facilities": false,
+  "Clients": false,
   };
 
-  String current = "info";
+  String current = "Primary Information";
 
   void updateCurrent(String option){
     mainOptions[current] = false;

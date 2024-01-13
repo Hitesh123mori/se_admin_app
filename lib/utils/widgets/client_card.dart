@@ -9,7 +9,8 @@ import '../colors.dart';
 
 class ClientCard extends StatefulWidget {
   final KClient client ;
-  ClientCard({super.key, required this.client});
+  bool isClicked = false ;
+  ClientCard({super.key, required this.client,required this.isClicked});
 
   @override
   State<ClientCard> createState() => _ClientCardState();
@@ -38,7 +39,6 @@ class _ClientCardState extends State<ClientCard> {
             onTap: (){
               setState(() {
                 kClient.updateCurrent(widget.client);
-                print("#pc ${widget.client.id}");
               });
             },
             child: Container(
@@ -48,7 +48,7 @@ class _ClientCardState extends State<ClientCard> {
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
-                    if (widget.client.name == kClient.current!.name)
+                    if (widget.isClicked)
                       Container(
                         height: 30,
                         width: 5,

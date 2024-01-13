@@ -9,19 +9,21 @@ import 'package:se_admin_app/utils/colors.dart';
 import 'package:se_admin_app/utils/widgets/product_card.dart';
 
 class ProductOptionsCol extends StatefulWidget {
-  const ProductOptionsCol({super.key});
+  const ProductOptionsCol({Key? key}) : super(key: key);
 
   @override
-  State<ProductOptionsCol> createState() => _ProductOptionsColState();
+  _ProductOptionsColState createState() => _ProductOptionsColState();
 }
 
 class _ProductOptionsColState extends State<ProductOptionsCol> {
-  String searchText = "";
-  bool firstTimeLoad = true;
+  bool isSearching = false;
+  List<Product> searchProduct = [];
+  List<Product> productList = [];
+  TextEditingController _controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ProductProvider>(builder: (context, product, child){
+    return Consumer<ProductProvider>(builder: (context, product, child) {
       return Column(
         children: [
           Padding(
@@ -40,44 +42,44 @@ class _ProductOptionsColState extends State<ProductOptionsCol> {
                       ),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    constraints:
-                    BoxConstraints(minWidth: 190, minHeight: 50),
+                    constraints: BoxConstraints(minWidth: 190, minHeight: 50),
                     width: 190,
                     height: 50,
-                    child: Center(
-                      child: Container(
-                        width: 200,
-                        height: 50,
-                        child: Center(
-                          child: GestureDetector(
-                            child: TextFormField(
-                              onChanged: (value){
-                                setState(() {
-                                  searchText = value; // Convert to lowercase
-                                  firstTimeLoad = true;
-                                  print("===================================");
-                                });
-                              },
-                              cursorColor: AppColors.theme['highlightColor'],
-                              style: TextStyle(
-                                  color: AppColors
-                                      .theme['secondaryColor']),
-                              textAlign: TextAlign.center,
-                              autocorrect: true,
-                              autovalidateMode:
-                              AutovalidateMode.always,
-                              decoration: InputDecoration(
-                                hintText: 'Search Here',
-                                hintStyle: TextStyle(
-                                    color: AppColors
-                                        .theme['secondaryColor']),
-                                border: OutlineInputBorder(
-                                  borderSide: BorderSide.none,
-                                ),
-                                filled: true,
-                                fillColor: Colors.transparent,
-                              ),
+                    child: Container(
+                      child: Center(
+                        child: TextFormField(
+                          controller: _controller,
+                          onTap: () {
+                            setState(() {
+                              isSearching = true;
+                            });
+                          },
+                          onChanged: (value) {
+                            setState(() {
+                              searchProduct = productList
+                                  .where((product) => product.name
+                                      .toLowerCase()
+                                      .contains(value.toLowerCase()))
+                                  .toList();
+                            });
+                          },
+                          cursorColor: AppColors.theme['highlightColor'],
+                          style: TextStyle(
+                            color: AppColors.theme['secondaryColor'],
+                          ),
+                          textAlign: TextAlign.center,
+                          autocorrect: true,
+                          autovalidateMode: AutovalidateMode.always,
+                          decoration: InputDecoration(
+                            hintText: 'Search Here',
+                            hintStyle: TextStyle(
+                              color: AppColors.theme['secondaryColor'],
                             ),
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide.none,
+                            ),
+                            filled: true,
+                            fillColor: Colors.transparent,
                           ),
                         ),
                       ),
@@ -85,19 +87,26 @@ class _ProductOptionsColState extends State<ProductOptionsCol> {
                   ),
                 ),
                 InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    setState(() {
+                      isSearching = false;
+                      _controller.text = '';
+                    });
+                  },
                   child: Container(
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Colors.white24),
-                          borderRadius: BorderRadius.circular(10),
-                          color: AppColors.theme['tertiaryColor']),
-                      height: 50,
-                      width: 50,
-                      child: Icon(
-                        Icons.add,
-                        color: AppColors.theme['secondaryColor'],
-                        size: 25,
-                      )),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.white24),
+                      borderRadius: BorderRadius.circular(10),
+                      color: AppColors.theme['tertiaryColor'],
+                    ),
+                    height: 50,
+                    width: 50,
+                    child: Icon(
+                      isSearching ? Icons.cancel_outlined : Icons.add,
+                      color: AppColors.theme['secondaryColor'],
+                      size: 25,
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -116,44 +125,56 @@ class _ProductOptionsColState extends State<ProductOptionsCol> {
               ),
               width: mq.width * 0.15,
               height: mq.height * 1,
-              child:   StreamBuilder(
+              child: StreamBuilder(
                 stream: FirebaseFirestore.instance
                     .collection('products')
-                    .where('name',
-                    isGreaterThanOrEqualTo: searchText)
-                    .where('name', isLessThan: searchText + 'z')
                     .snapshots(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
-                    return CircularProgressIndicator();
+                    return Center(
+                      child: CircularProgressIndicator(
+                        color: AppColors.theme['highlightColor'],
+                      ),
+                    );
                   }
-                  var documents = snapshot.data?.docs;
-                  print("#doc: ${documents!.first['name']}");
+                  final data = snapshot.data?.docs;
+                  productList =
+                      data?.map((e) => Product.fromJson(e.data())).toList() ??
+                          [];
 
-                  if(documents?.length == 0){
-                    return Text("No match found", style: TextStyle(color: Colors.white),);
+                  if (productList?.isEmpty ?? true) {
+                    return Center(
+                      child: Text(
+                        "No products found",
+                        style: TextStyle(color: Colors.white60),
+                      ),
+                    );
                   }
-
-                  if(firstTimeLoad) {
-                    product.current = Product.fromJson(documents!.first.data());
-                    if(product.current!.name.contains(searchText)) firstTimeLoad = false;
+                  if (isSearching && searchProduct.isEmpty) {
+                    return Center(
+                      child: Text(
+                        "No search results found",
+                        style: TextStyle(color: Colors.white60),
+                      ),
+                    );
                   }
-
-                  print("#cp: ${product.current?.id}");
 
                   return SizedBox(
                     height: mq.height,
                     child: ListView.builder(
                       shrinkWrap: true,
                       physics: BouncingScrollPhysics(),
-                      itemCount: documents?.length,
+                      itemCount: isSearching
+                          ? searchProduct.length
+                          : productList?.length ?? 0,
                       itemBuilder: (context, index) {
-                        var document = documents?[index];
-                        var pro = Product.fromJson(document!.data());
-                        // Build your UI here using the document data
                         return ProductCard(
-                          product: pro,
-                          isClicked: pro.id==product.current?.id,
+                          product: isSearching
+                              ? searchProduct[index]
+                              : productList[index],
+                          isClicked: isSearching
+                              ? searchProduct[index].id == product.current?.id
+                              : productList[index].id == product.current?.id,
                         );
                       },
                     ),
