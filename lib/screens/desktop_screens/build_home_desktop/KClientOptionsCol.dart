@@ -19,12 +19,13 @@ class KClientOptionsCol extends StatefulWidget {
 }
 
 class _KClientOptionsColState extends State<KClientOptionsCol> {
-  String searchText = "";
-  bool firstTimeLoad = true;
+  bool isSearching = false;
+  List<KClient> searchClient = [];
+  List<KClient> clientList = [];
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<KClientProvider>(builder: (context, kClient, child){
+    return Consumer<KClientProvider>(builder: (context, kClient, child) {
       return Column(
         children: [
           Padding(
@@ -43,8 +44,7 @@ class _KClientOptionsColState extends State<KClientOptionsCol> {
                       ),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    constraints:
-                    BoxConstraints(minWidth: 190, minHeight: 50),
+                    constraints: BoxConstraints(minWidth: 190, minHeight: 50),
                     width: 190,
                     height: 50,
                     child: Center(
@@ -52,34 +52,36 @@ class _KClientOptionsColState extends State<KClientOptionsCol> {
                         width: 200,
                         height: 50,
                         child: Center(
-                          child: GestureDetector(
-                            child: TextFormField(
-                              onChanged: (value){
-                                setState(() {
-                                  searchText = value; // Convert to lowercase
-                                  firstTimeLoad = true;
-                                  print("===================================");
-                                });
-                              },
-                              cursorColor: AppColors.theme['highlightColor'],
-                              style: TextStyle(
-                                  color: AppColors
-                                      .theme['secondaryColor']),
-                              textAlign: TextAlign.center,
-                              autocorrect: true,
-                              autovalidateMode:
-                              AutovalidateMode.always,
-                              decoration: InputDecoration(
-                                hintText: 'Search Here',
-                                hintStyle: TextStyle(
-                                    color: AppColors
-                                        .theme['secondaryColor']),
-                                border: OutlineInputBorder(
-                                  borderSide: BorderSide.none,
-                                ),
-                                filled: true,
-                                fillColor: Colors.transparent,
+                          child: TextFormField(
+                            onTap: () {
+                              setState(() {
+                                isSearching = true;
+                              });
+                            },
+                            onChanged: (value) {
+                              setState(() {
+                                searchClient = clientList
+                                    .where((client) => client.name
+                                        .toLowerCase()
+                                        .contains(value.toLowerCase()))
+                                    .toList();
+                              });
+                            },
+                            cursorColor: AppColors.theme['highlightColor'],
+                            style: TextStyle(
+                                color: AppColors.theme['secondaryColor']),
+                            textAlign: TextAlign.center,
+                            autocorrect: true,
+                            autovalidateMode: AutovalidateMode.always,
+                            decoration: InputDecoration(
+                              hintText: 'Search Here',
+                              hintStyle: TextStyle(
+                                  color: AppColors.theme['secondaryColor']),
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide.none,
                               ),
+                              filled: true,
+                              fillColor: Colors.transparent,
                             ),
                           ),
                         ),
@@ -119,45 +121,55 @@ class _KClientOptionsColState extends State<KClientOptionsCol> {
               ),
               width: mq.width * 0.15,
               height: mq.height * 1,
-              child:   StreamBuilder(
+              child: StreamBuilder(
                 stream: FirebaseFirestore.instance
                     .collection('clients')
-                    .where('name',
-                    isGreaterThanOrEqualTo: searchText)
-                    .where('name', isLessThan: '${searchText}z')
                     .snapshots(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
-                    return const CircularProgressIndicator();
+                    return Center(
+                      child: CircularProgressIndicator(
+                        color: AppColors.theme['highlightColor'],
+                      ),
+                    );
                   }
+                  final data = snapshot.data?.docs;
+                  clientList = data?.map((e) => KClient.fromJson(e.data())).toList() ?? [];
 
-
-
-                  var documents = snapshot.data?.docs;
-                  print("#doc: ${documents!.first['name']}");
-
-                  if(documents.isEmpty){
-                    return const Text("No match found", style: TextStyle(color: Colors.white),);
+                  if (clientList?.isEmpty ?? true) {
+                    return Center(
+                      child: Text(
+                        "No clients found",
+                        style: TextStyle(color: Colors.white60),
+                      ),
+                    );
                   }
-
-                  if(firstTimeLoad) {
-                    kClient.current = KClient.fromJson(documents.first.data());
-                    if(kClient.current!.name.contains(searchText)) firstTimeLoad = false;
+                  if (isSearching && searchClient.isEmpty) {
+                    return Center(
+                      child: Text(
+                        "No search results found",
+                        style: TextStyle(color: Colors.white60),
+                      ),
+                    );
                   }
-
-                  print("#cp: ${kClient.current?.id}");
 
                   return SizedBox(
                     height: mq.height,
                     child: ListView.builder(
                       shrinkWrap: true,
-                      physics: const BouncingScrollPhysics(),
-                      itemCount: documents.length,
+                      physics: BouncingScrollPhysics(),
+                      itemCount: isSearching
+                          ? searchClient.length
+                          : clientList?.length ?? 0,
                       itemBuilder: (context, index) {
-                        var document = documents[index];
-                        var obj = KClient.fromJson(document.data());
-                        // Build your UI here using the document data
-                        return ClientCard(client: obj);
+                        return ClientCard(
+                          client: isSearching
+                              ? searchClient[index]
+                              : clientList[index],
+                          isClicked: isSearching
+                              ? searchClient[index].id == kClient.current?.id
+                              : clientList[index].id == kClient.current?.id,
+                        );
                       },
                     ),
                   );

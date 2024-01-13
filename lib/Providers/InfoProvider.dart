@@ -3,12 +3,12 @@ import 'package:flutter/widgets.dart';
 class InfoProvider extends ChangeNotifier{
 
   Map<String, bool> options = {
-    "director": true,
-    "aboutUs": false,
-    "contact": false,
+    "Director Information": true,
+    "About Us": false,
+    "Contact Us": false,
   };
 
-  String current = "director";
+  String current = "Director Information";
 
   void updateCurrent(String option){
     options[current] = false;
