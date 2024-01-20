@@ -9,4 +9,8 @@ class ProductProvider extends ChangeNotifier{
     current = newProduct;
     notifyListeners();
   }
+
+  void notify(){
+    notifyListeners();
+  }
 }

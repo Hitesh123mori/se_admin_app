@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:se_admin_app/Providers/MainOptionProvider.dart';
-import 'package:se_admin_app/constant/constants_provider.dart';
 
 import '../../../main.dart';
 import '../../../utils/colors.dart';
 import '../../../utils/widgets/options.dart';
 
-class MainMenubarDesktop extends StatefulWidget {
-  MainMenubarDesktop({
+class MainMenuBarDesktop extends StatefulWidget {
+  const MainMenuBarDesktop({
     super.key,
   });
 
   @override
-  State<MainMenubarDesktop> createState() => _MainMenubarDesktopState();
+  State<MainMenuBarDesktop> createState() => _MainMenuBarDesktopState();
 }
 
-class _MainMenubarDesktopState extends State<MainMenubarDesktop> {
+class _MainMenuBarDesktopState extends State<MainMenuBarDesktop> {
   @override
   Widget build(BuildContext context) {
     return Consumer<MainOptionProvider>(builder: (build, mainOp, child) {

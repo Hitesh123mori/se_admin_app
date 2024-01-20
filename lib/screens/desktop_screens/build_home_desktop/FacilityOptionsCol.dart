@@ -18,7 +18,7 @@ class _FacilityOptionsColState extends State<FacilityOptionsCol> {
   bool isSearching = false;
   List<Facility> searchFacility = [];
   List<Facility> facilityList = [];
-  TextEditingController _controller = TextEditingController() ;
+  final TextEditingController _controller = TextEditingController() ;
 
   @override
   Widget build(BuildContext context) {
@@ -41,11 +41,11 @@ class _FacilityOptionsColState extends State<FacilityOptionsCol> {
                       ),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    constraints: BoxConstraints(minWidth: 190, minHeight: 50),
+                    constraints: const BoxConstraints(minWidth: 190, minHeight: 50),
                     width: 190,
                     height: 50,
                     child: Center(
-                      child: Container(
+                      child: SizedBox(
                         width: 200,
                         height: 50,
                         child: Center(
@@ -75,7 +75,7 @@ class _FacilityOptionsColState extends State<FacilityOptionsCol> {
                               hintText: 'Search Here',
                               hintStyle: TextStyle(
                                   color: AppColors.theme['secondaryColor']),
-                              border: OutlineInputBorder(
+                              border: const OutlineInputBorder(
                                 borderSide: BorderSide.none,
                               ),
                               filled: true,
@@ -122,7 +122,7 @@ class _FacilityOptionsColState extends State<FacilityOptionsCol> {
                   color: Colors.white24,
                 ),
               ),
-              constraints: BoxConstraints(
+              constraints: const BoxConstraints(
                 minWidth: 250,
               ),
               width: mq.width * 0.15,
@@ -142,8 +142,10 @@ class _FacilityOptionsColState extends State<FacilityOptionsCol> {
                   final data = snapshot.data?.docs;
                   facilityList = data?.map((e) => Facility.fromJson(e.data())).toList() ?? [];
 
-                  if (facilityList?.isEmpty ?? true) {
-                    return Center(
+                  if(facilityList.isNotEmpty) facilityPro.updateCurrent(facilityList.first);
+
+                  if (facilityList.isEmpty) {
+                    return const Center(
                       child: Text(
                         "No facility found",
                         style: TextStyle(color: Colors.white60),
@@ -151,7 +153,7 @@ class _FacilityOptionsColState extends State<FacilityOptionsCol> {
                     );
                   }
                   if (isSearching && searchFacility.isEmpty) {
-                    return Center(
+                    return const Center(
                       child: Text(
                         "No search results found",
                         style: TextStyle(color: Colors.white60),
@@ -162,10 +164,10 @@ class _FacilityOptionsColState extends State<FacilityOptionsCol> {
                     height: mq.height,
                     child: ListView.builder(
                       shrinkWrap: true,
-                      physics: BouncingScrollPhysics(),
+                      physics: const BouncingScrollPhysics(),
                       itemCount: isSearching
                           ? searchFacility.length
-                          : facilityList?.length ?? 0,
+                          : facilityList.length,
                       itemBuilder: (context, index) {
                         return FacilityCard(
                           facility: isSearching

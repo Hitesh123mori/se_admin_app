@@ -37,6 +37,11 @@ dependencies:
   cloud_firestore:
   shimmer:
   provider:
+  image_picker_web: ^3.1.1
+  html:
+  firebase_storage:
+  mime_type:
+  synchronized: ^3.1.0+1
 #  beamer: ^1.5.6
 #  collection: ^1.18.0
 
