@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:se_admin_app/Providers/FacilityProvider.dart';
@@ -14,7 +15,6 @@ import 'firebase_options.dart';
 
 
 late Size mq ;
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -22,7 +22,7 @@ void main() async {
   );
   runApp(MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context)=>ConstantsProvider()),
+        // ChangeNotifierProvider(create: (context)=>ConstantsProvider()),
         ChangeNotifierProvider(create: (context)=>ProductProvider()),
         ChangeNotifierProvider(create: (context)=>MainOptionProvider()),
         ChangeNotifierProvider(create: (context)=>InfoProvider()),
@@ -48,9 +48,6 @@ class _AdminAppState extends State<AdminApp> {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      // home: PlatformDefine(),
-
-      // home: PlatformDefine(),
 
       home: PlatformDefine(),
     );

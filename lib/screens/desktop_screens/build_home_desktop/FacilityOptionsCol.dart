@@ -142,7 +142,7 @@ class _FacilityOptionsColState extends State<FacilityOptionsCol> {
                   final data = snapshot.data?.docs;
                   facilityList = data?.map((e) => Facility.fromJson(e.data())).toList() ?? [];
 
-                  if(facilityList.isNotEmpty) facilityPro.updateCurrent(facilityList.first);
+                  // if(facilityList.isNotEmpty) facilityPro.updateCurrent(facilityList.first);
 
                   if (facilityList.isEmpty) {
                     return const Center(

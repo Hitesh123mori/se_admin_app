@@ -143,7 +143,7 @@ class _KClientOptionsColState extends State<KClientOptionsCol> {
                   final data = snapshot.data?.docs;
                   kClientList = data?.map((e) => KClient.fromJson(e.data())).toList() ?? [];
 
-                  if(kClientList.isNotEmpty) kClient.updateCurrent(kClientList.first);
+                  // if(kClientList.isNotEmpty) kClient.updateCurrent(kClientList.first);
 
                   if (kClientList.isEmpty) {
                     return const Center(

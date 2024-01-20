@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:se_admin_app/Providers/ProductProvider.dart';
+import 'package:se_admin_app/desktop.dart';
 
 import 'package:se_admin_app/main.dart';
 import 'package:se_admin_app/models/product.dart';
@@ -80,14 +81,16 @@ class _ProductOptionsColState extends State<ProductOptionsCol> {
                             borderSide: BorderSide.none,
                           ),
                           filled: true,
-                          fillColor: Colors.transparent,
+                          fillColor:AppColors.theme['tertiaryColor'] ,
                         ),
                       ),
                     ),
                   ),
                 ),
                 InkWell(
-                  onTap: () {
+                  onTap: !isSearching
+                      ? () {}
+                      : () {
                     setState(() {
                       isSearching = false;
                       _controller.text = '';
@@ -141,10 +144,10 @@ class _ProductOptionsColState extends State<ProductOptionsCol> {
                   productList =
                       data?.map((e) => Product.fromJson(e.data())).toList() ??
                           [];
-                  if(productList.isNotEmpty && isFirstLoad) {
-                    product.updateCurrent(productList.first);
-                    isFirstLoad = !isFirstLoad;
-                  }
+                  // if(productList.isNotEmpty && isFirstLoad) {
+                  //   product.updateCurrent(productList.first);
+                  //   isFirstLoad = !isFirstLoad;
+                  // }
 
                   if (productList.isEmpty) {
                     return const Center(
