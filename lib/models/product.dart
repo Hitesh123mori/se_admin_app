@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:se_admin_app/apis/FirebaseAPI.dart';
 
 class Product {
@@ -55,4 +56,42 @@ class Product {
     });
     return false;
   }
+
+  Future<void> update()async{
+    final docRef = _collectionRef.doc(id);
+    docRef.update({"name": name}).onError((error, stackTrace) {
+      print("#error $error $stackTrace");
+    });
+  }
+
+
+  Future<void> uploadImage(var image)async {
+    print("#Uploading img: id: ${id}");
+    var imageRef = FirebaseAPI.fireStoreAPI.child(imagePath);
+
+    imagePath = "images/products/$id";
+    print("#path: $imagePath");
+
+    imageRef = FirebaseAPI.fireStoreAPI.child(imagePath);
+
+
+    imageRef.putData(image.data)
+        .then((p0) {
+      // edit in DB;
+      final docRef = _collectionRef.doc(id);
+      docRef.update({"imagePath": imagePath});
+    }).onError((error, stackTrace) {
+      print("#Error: ${stackTrace}");
+    });
+  }
+
+  Future<dynamic> getImage()async {
+    if (imagePath == "") return "null";
+    final imgRef = FirebaseAPI.fireStoreAPI.child(imagePath);
+
+    var url = await imgRef.getDownloadURL();
+
+    return url;
+  }
+
 }

@@ -2,14 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:se_admin_app/Providers/KClientProvider.dart';
-import 'package:se_admin_app/Providers/ProductProvider.dart';
 
 import 'package:se_admin_app/main.dart';
 import 'package:se_admin_app/models/client.dart';
-import 'package:se_admin_app/models/product.dart';
 import 'package:se_admin_app/utils/colors.dart';
 import 'package:se_admin_app/utils/widgets/client_card.dart';
-import 'package:se_admin_app/utils/widgets/product_card.dart';
 
 class KClientOptionsCol extends StatefulWidget {
   const KClientOptionsCol({super.key});
@@ -21,7 +18,7 @@ class KClientOptionsCol extends StatefulWidget {
 class _KClientOptionsColState extends State<KClientOptionsCol> {
   bool isSearching = false;
   List<KClient> searchClient = [];
-  List<KClient> clientList = [];
+  List<KClient> kClientList = [];
   TextEditingController _controller = TextEditingController() ;
 
   @override
@@ -45,11 +42,11 @@ class _KClientOptionsColState extends State<KClientOptionsCol> {
                       ),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    constraints: BoxConstraints(minWidth: 190, minHeight: 50),
+                    constraints: const BoxConstraints(minWidth: 190, minHeight: 50),
                     width: 190,
                     height: 50,
                     child: Center(
-                      child: Container(
+                      child: SizedBox(
                         width: 200,
                         height: 50,
                         child: Center(
@@ -62,7 +59,7 @@ class _KClientOptionsColState extends State<KClientOptionsCol> {
                             },
                             onChanged: (value) {
                               setState(() {
-                                searchClient = clientList
+                                searchClient = kClientList
                                     .where((client) => client.name
                                         .toLowerCase()
                                         .contains(value.toLowerCase()))
@@ -79,7 +76,7 @@ class _KClientOptionsColState extends State<KClientOptionsCol> {
                               hintText: 'Search Here',
                               hintStyle: TextStyle(
                                   color: AppColors.theme['secondaryColor']),
-                              border: OutlineInputBorder(
+                              border: const OutlineInputBorder(
                                 borderSide: BorderSide.none,
                               ),
                               filled: true,
@@ -126,7 +123,7 @@ class _KClientOptionsColState extends State<KClientOptionsCol> {
                   color: Colors.white24,
                 ),
               ),
-              constraints: BoxConstraints(
+              constraints: const BoxConstraints(
                 minWidth: 250,
               ),
               width: mq.width * 0.15,
@@ -144,10 +141,12 @@ class _KClientOptionsColState extends State<KClientOptionsCol> {
                     );
                   }
                   final data = snapshot.data?.docs;
-                  clientList = data?.map((e) => KClient.fromJson(e.data())).toList() ?? [];
+                  kClientList = data?.map((e) => KClient.fromJson(e.data())).toList() ?? [];
 
-                  if (clientList?.isEmpty ?? true) {
-                    return Center(
+                  if(kClientList.isNotEmpty) kClient.updateCurrent(kClientList.first);
+
+                  if (kClientList.isEmpty) {
+                    return const Center(
                       child: Text(
                         "No clients found",
                         style: TextStyle(color: Colors.white60),
@@ -155,7 +154,7 @@ class _KClientOptionsColState extends State<KClientOptionsCol> {
                     );
                   }
                   if (isSearching && searchClient.isEmpty) {
-                    return Center(
+                    return const Center(
                       child: Text(
                         "No search results found",
                         style: TextStyle(color: Colors.white60),
@@ -167,18 +166,18 @@ class _KClientOptionsColState extends State<KClientOptionsCol> {
                     height: mq.height,
                     child: ListView.builder(
                       shrinkWrap: true,
-                      physics: BouncingScrollPhysics(),
+                      physics: const BouncingScrollPhysics(),
                       itemCount: isSearching
                           ? searchClient.length
-                          : clientList?.length ?? 0,
+                          : kClientList.length,
                       itemBuilder: (context, index) {
                         return ClientCard(
                           client: isSearching
                               ? searchClient[index]
-                              : clientList[index],
+                              : kClientList[index],
                           isClicked: isSearching
                               ? searchClient[index].id == kClient.current?.id
-                              : clientList[index].id == kClient.current?.id,
+                              : kClientList[index].id == kClient.current?.id,
                         );
                       },
                     ),
