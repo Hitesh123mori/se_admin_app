@@ -5,6 +5,7 @@ import 'package:se_admin_app/Providers/ProductProvider.dart';
 
 import 'package:se_admin_app/main.dart';
 import 'package:se_admin_app/models/product.dart';
+import 'package:se_admin_app/screens/desktop_screens/options_desktop/product_detail_desk/product_details_desktop.dart';
 import 'package:se_admin_app/utils/colors.dart';
 import 'package:se_admin_app/utils/widgets/product_card.dart';
 
@@ -12,14 +13,15 @@ class ProductOptionsCol extends StatefulWidget {
   const ProductOptionsCol({Key? key}) : super(key: key);
 
   @override
-  _ProductOptionsColState createState() => _ProductOptionsColState();
+  State<ProductOptionsCol> createState() => _ProductOptionsColState();
 }
 
 class _ProductOptionsColState extends State<ProductOptionsCol> {
   bool isSearching = false;
+  bool isFirstLoad = true;
   List<Product> searchProduct = [];
   List<Product> productList = [];
-  TextEditingController _controller = TextEditingController();
+  final TextEditingController _controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -42,45 +44,43 @@ class _ProductOptionsColState extends State<ProductOptionsCol> {
                       ),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    constraints: BoxConstraints(minWidth: 190, minHeight: 50),
+                    constraints: const BoxConstraints(minWidth: 190, minHeight: 50),
                     width: 190,
                     height: 50,
-                    child: Container(
-                      child: Center(
-                        child: TextFormField(
-                          controller: _controller,
-                          onTap: () {
-                            setState(() {
-                              isSearching = true;
-                            });
-                          },
-                          onChanged: (value) {
-                            setState(() {
-                              searchProduct = productList
-                                  .where((product) => product.name
-                                      .toLowerCase()
-                                      .contains(value.toLowerCase()))
-                                  .toList();
-                            });
-                          },
-                          cursorColor: AppColors.theme['highlightColor'],
-                          style: TextStyle(
+                    child: Center(
+                      child: TextFormField(
+                        controller: _controller,
+                        onTap: () {
+                          setState(() {
+                            isSearching = true;
+                          });
+                        },
+                        onChanged: (value) {
+                          setState(() {
+                            searchProduct = productList
+                                .where((product) => product.name
+                                    .toLowerCase()
+                                    .contains(value.toLowerCase()))
+                                .toList();
+                          });
+                        },
+                        cursorColor: AppColors.theme['highlightColor'],
+                        style: TextStyle(
+                          color: AppColors.theme['secondaryColor'],
+                        ),
+                        textAlign: TextAlign.center,
+                        autocorrect: true,
+                        autovalidateMode: AutovalidateMode.always,
+                        decoration: InputDecoration(
+                          hintText: 'Search Here',
+                          hintStyle: TextStyle(
                             color: AppColors.theme['secondaryColor'],
                           ),
-                          textAlign: TextAlign.center,
-                          autocorrect: true,
-                          autovalidateMode: AutovalidateMode.always,
-                          decoration: InputDecoration(
-                            hintText: 'Search Here',
-                            hintStyle: TextStyle(
-                              color: AppColors.theme['secondaryColor'],
-                            ),
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide.none,
-                            ),
-                            filled: true,
-                            fillColor: Colors.transparent,
+                          border: const OutlineInputBorder(
+                            borderSide: BorderSide.none,
                           ),
+                          filled: true,
+                          fillColor: Colors.transparent,
                         ),
                       ),
                     ),
@@ -120,7 +120,7 @@ class _ProductOptionsColState extends State<ProductOptionsCol> {
                   color: Colors.white24,
                 ),
               ),
-              constraints: BoxConstraints(
+              constraints: const BoxConstraints(
                 minWidth: 250,
               ),
               width: mq.width * 0.15,
@@ -141,9 +141,13 @@ class _ProductOptionsColState extends State<ProductOptionsCol> {
                   productList =
                       data?.map((e) => Product.fromJson(e.data())).toList() ??
                           [];
+                  if(productList.isNotEmpty && isFirstLoad) {
+                    product.updateCurrent(productList.first);
+                    isFirstLoad = !isFirstLoad;
+                  }
 
-                  if (productList?.isEmpty ?? true) {
-                    return Center(
+                  if (productList.isEmpty) {
+                    return const Center(
                       child: Text(
                         "No products found",
                         style: TextStyle(color: Colors.white60),
@@ -151,7 +155,7 @@ class _ProductOptionsColState extends State<ProductOptionsCol> {
                     );
                   }
                   if (isSearching && searchProduct.isEmpty) {
-                    return Center(
+                    return const Center(
                       child: Text(
                         "No search results found",
                         style: TextStyle(color: Colors.white60),
@@ -163,10 +167,10 @@ class _ProductOptionsColState extends State<ProductOptionsCol> {
                     height: mq.height,
                     child: ListView.builder(
                       shrinkWrap: true,
-                      physics: BouncingScrollPhysics(),
+                      physics: const BouncingScrollPhysics(),
                       itemCount: isSearching
                           ? searchProduct.length
-                          : productList?.length ?? 0,
+                          : productList.length,
                       itemBuilder: (context, index) {
                         return ProductCard(
                           product: isSearching

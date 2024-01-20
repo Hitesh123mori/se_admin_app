@@ -54,6 +54,7 @@ class _ProductCardState extends State<ProductCard> {
                   SizedBox(width: 10,),
                   Text(
                     widget.product.name,
+                    softWrap: true,
                     style: TextStyle(color: AppColors.theme['secondaryColor'], fontSize: 16),
                   ),
                 ],

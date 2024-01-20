@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-
-import '../../../main.dart';
-import '../../../utils/colors.dart';
+import 'package:se_admin_app/main.dart';
+import 'package:se_admin_app/utils/colors.dart';
 
 class AppbarDesktop extends StatefulWidget {
   const AppbarDesktop({super.key});
@@ -19,7 +18,7 @@ class _AppbarDesktopState extends State<AppbarDesktop> {
         padding: EdgeInsets.symmetric(
             horizontal: mq.width * 0.007, vertical: mq.height * 0.04),
         child: Container(
-          constraints: BoxConstraints(
+          constraints: const BoxConstraints(
             minHeight: 100,
           ),
           height: mq.height * 0.1,
@@ -35,7 +34,7 @@ class _AppbarDesktopState extends State<AppbarDesktop> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Padding(
-                padding: EdgeInsets.symmetric(vertical: 20, horizontal: 5),
+                padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 5),
                 child: Image.asset(
                   "assets/images/logos/se_fulllogo.png",
                   fit: BoxFit.cover,
@@ -58,11 +57,10 @@ class _AppbarDesktopState extends State<AppbarDesktop> {
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
-                      side: BorderSide(color: Colors.white24),
+                      side: const BorderSide(color: Colors.white24),
                     ),
-                    primary: AppColors.theme['primaryColor'],
                   ),
-                  child: Padding(
+                  child: const Padding(
                     padding: EdgeInsets.all(10.0),
                     child: Row(
                       children: [
