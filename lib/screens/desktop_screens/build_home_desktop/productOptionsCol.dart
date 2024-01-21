@@ -2,11 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:se_admin_app/Providers/ProductProvider.dart';
-import 'package:se_admin_app/desktop.dart';
 
 import 'package:se_admin_app/main.dart';
 import 'package:se_admin_app/models/product.dart';
-import 'package:se_admin_app/screens/desktop_screens/options_desktop/product_detail_desk/product_details_desktop.dart';
 import 'package:se_admin_app/utils/colors.dart';
 import 'package:se_admin_app/utils/widgets/product_card.dart';
 
@@ -20,8 +18,7 @@ class ProductOptionsCol extends StatefulWidget {
 class _ProductOptionsColState extends State<ProductOptionsCol> {
   bool isSearching = false;
   bool isFirstLoad = true;
-  List<Product> searchProduct = [];
-  List<Product> productList = [];
+
   final TextEditingController _controller = TextEditingController();
 
   @override
@@ -54,22 +51,23 @@ class _ProductOptionsColState extends State<ProductOptionsCol> {
                         onTap: () {
                           setState(() {
                             isSearching = true;
+                            product.searchProduct = product.productList;
                           });
                         },
                         onChanged: (value) {
                           setState(() {
-                            searchProduct = productList
-                                .where((product) => product.name
-                                    .toLowerCase()
-                                    .contains(value.toLowerCase()))
-                                .toList();
+                            if (value == "") {
+                              product.searchProduct = product.productList;
+                            } else {
+                              product.updateSearchList(value.toLowerCase());
+                            }
                           });
                         },
                         cursorColor: AppColors.theme['highlightColor'],
                         style: TextStyle(
                           color: AppColors.theme['secondaryColor'],
                         ),
-                        textAlign: TextAlign.center,
+                        textAlign: TextAlign.start,
                         autocorrect: true,
                         autovalidateMode: AutovalidateMode.always,
                         decoration: InputDecoration(
@@ -81,7 +79,7 @@ class _ProductOptionsColState extends State<ProductOptionsCol> {
                             borderSide: BorderSide.none,
                           ),
                           filled: true,
-                          fillColor:AppColors.theme['tertiaryColor'] ,
+                          fillColor: AppColors.theme['tertiaryColor'],
                         ),
                       ),
                     ),
@@ -89,13 +87,20 @@ class _ProductOptionsColState extends State<ProductOptionsCol> {
                 ),
                 InkWell(
                   onTap: !isSearching
-                      ? () {}
+                      ? () {
+                          // for add new product
+                          Product newProduct = Product(name: "New product", imagePath: "");
+                          newProduct.add();
+                          product.isNew = true;
+                          product.current = newProduct;
+                          product.notify();
+                        }
                       : () {
-                    setState(() {
-                      isSearching = false;
-                      _controller.text = '';
-                    });
-                  },
+                          setState(() {
+                            isSearching = false;
+                            _controller.text = '';
+                          });
+                        },
                   child: Container(
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.white24),
@@ -129,9 +134,7 @@ class _ProductOptionsColState extends State<ProductOptionsCol> {
               width: mq.width * 0.15,
               height: mq.height * 1,
               child: StreamBuilder(
-                stream: FirebaseFirestore.instance
-                    .collection('products')
-                    .snapshots(),
+                stream: FirebaseFirestore.instance.collection('products').snapshots(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
                     return Center(
@@ -141,15 +144,9 @@ class _ProductOptionsColState extends State<ProductOptionsCol> {
                     );
                   }
                   final data = snapshot.data?.docs;
-                  productList =
-                      data?.map((e) => Product.fromJson(e.data())).toList() ??
-                          [];
-                  // if(productList.isNotEmpty && isFirstLoad) {
-                  //   product.updateCurrent(productList.first);
-                  //   isFirstLoad = !isFirstLoad;
-                  // }
+                  product.productList = data?.map((e) => Product.fromJson(e.data())).toList() ?? [];
 
-                  if (productList.isEmpty) {
+                  if (product.productList.isEmpty) {
                     return const Center(
                       child: Text(
                         "No products found",
@@ -157,7 +154,7 @@ class _ProductOptionsColState extends State<ProductOptionsCol> {
                       ),
                     );
                   }
-                  if (isSearching && searchProduct.isEmpty) {
+                  if (isSearching && product.searchProduct.isEmpty) {
                     return const Center(
                       child: Text(
                         "No search results found",
@@ -171,17 +168,13 @@ class _ProductOptionsColState extends State<ProductOptionsCol> {
                     child: ListView.builder(
                       shrinkWrap: true,
                       physics: const BouncingScrollPhysics(),
-                      itemCount: isSearching
-                          ? searchProduct.length
-                          : productList.length,
+                      itemCount: isSearching ? product.searchProduct.length : product.productList.length,
                       itemBuilder: (context, index) {
                         return ProductCard(
-                          product: isSearching
-                              ? searchProduct[index]
-                              : productList[index],
+                          product: isSearching ? product.searchProduct[index] : product.productList[index],
                           isClicked: isSearching
-                              ? searchProduct[index].id == product.current?.id
-                              : productList[index].id == product.current?.id,
+                              ? product.searchProduct[index].id == product.current?.id
+                              : product.productList[index].id == product.current?.id,
                         );
                       },
                     ),

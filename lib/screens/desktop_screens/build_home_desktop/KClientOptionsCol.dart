@@ -17,9 +17,8 @@ class KClientOptionsCol extends StatefulWidget {
 
 class _KClientOptionsColState extends State<KClientOptionsCol> {
   bool isSearching = false;
-  List<KClient> searchClient = [];
-  List<KClient> kClientList = [];
-  TextEditingController _controller = TextEditingController() ;
+
+  TextEditingController _controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -55,27 +54,26 @@ class _KClientOptionsColState extends State<KClientOptionsCol> {
                             onTap: () {
                               setState(() {
                                 isSearching = true;
+                                kClient.searchClient = kClient.kClientList;
                               });
                             },
                             onChanged: (value) {
                               setState(() {
-                                searchClient = kClientList
-                                    .where((client) => client.name
-                                        .toLowerCase()
-                                        .contains(value.toLowerCase()))
-                                    .toList();
+                                if (value == "") {
+                                  kClient.searchClient = kClient.kClientList;
+                                } else {
+                                  kClient.updateSearchList(value.toLowerCase());
+                                }
                               });
                             },
                             cursorColor: AppColors.theme['highlightColor'],
-                            style: TextStyle(
-                                color: AppColors.theme['secondaryColor']),
-                            textAlign: TextAlign.center,
+                            style: TextStyle(color: AppColors.theme['secondaryColor']),
+                            textAlign: TextAlign.start,
                             autocorrect: true,
                             autovalidateMode: AutovalidateMode.always,
                             decoration: InputDecoration(
                               hintText: 'Search Here',
-                              hintStyle: TextStyle(
-                                  color: AppColors.theme['secondaryColor']),
+                              hintStyle: TextStyle(color: AppColors.theme['secondaryColor']),
                               border: const OutlineInputBorder(
                                 borderSide: BorderSide.none,
                               ),
@@ -89,14 +87,21 @@ class _KClientOptionsColState extends State<KClientOptionsCol> {
                   ),
                 ),
                 InkWell(
-                  onTap: isSearching ? (){
-                    setState(() {
-                      isSearching = false ;
-                      _controller.text = '' ;
-
-                    });
-                  }:
-                      () {},
+                  onTap: isSearching
+                      ? () {
+                          setState(() {
+                            isSearching = false;
+                            _controller.text = '';
+                          });
+                        }
+                      : () {
+                          // for add new kClient
+                          KClient newKClient = KClient(name: "New Key Client", imagePath: "");
+                          newKClient.add();
+                          kClient.isNew = true;
+                          kClient.notify();
+                          kClient.current = newKClient;
+                        },
                   child: Container(
                       decoration: BoxDecoration(
                           border: Border.all(color: Colors.white24),
@@ -105,8 +110,7 @@ class _KClientOptionsColState extends State<KClientOptionsCol> {
                       height: 50,
                       width: 50,
                       child: Icon(
-                        isSearching ?Icons.cancel_outlined :
-                        Icons.add,
+                        isSearching ? Icons.cancel_outlined : Icons.add,
                         color: AppColors.theme['secondaryColor'],
                         size: 25,
                       )),
@@ -129,9 +133,7 @@ class _KClientOptionsColState extends State<KClientOptionsCol> {
               width: mq.width * 0.15,
               height: mq.height * 1,
               child: StreamBuilder(
-                stream: FirebaseFirestore.instance
-                    .collection('clients')
-                    .snapshots(),
+                stream: FirebaseFirestore.instance.collection('clients').snapshots(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
                     return Center(
@@ -141,11 +143,11 @@ class _KClientOptionsColState extends State<KClientOptionsCol> {
                     );
                   }
                   final data = snapshot.data?.docs;
-                  kClientList = data?.map((e) => KClient.fromJson(e.data())).toList() ?? [];
+                  kClient.kClientList = data?.map((e) => KClient.fromJson(e.data())).toList() ?? [];
 
                   // if(kClientList.isNotEmpty) kClient.updateCurrent(kClientList.first);
 
-                  if (kClientList.isEmpty) {
+                  if (kClient.kClientList.isEmpty) {
                     return const Center(
                       child: Text(
                         "No clients found",
@@ -153,7 +155,7 @@ class _KClientOptionsColState extends State<KClientOptionsCol> {
                       ),
                     );
                   }
-                  if (isSearching && searchClient.isEmpty) {
+                  if (isSearching && kClient.searchClient.isEmpty) {
                     return const Center(
                       child: Text(
                         "No search results found",
@@ -167,17 +169,13 @@ class _KClientOptionsColState extends State<KClientOptionsCol> {
                     child: ListView.builder(
                       shrinkWrap: true,
                       physics: const BouncingScrollPhysics(),
-                      itemCount: isSearching
-                          ? searchClient.length
-                          : kClientList.length,
+                      itemCount: isSearching ? kClient.searchClient.length : kClient.kClientList.length,
                       itemBuilder: (context, index) {
                         return ClientCard(
-                          client: isSearching
-                              ? searchClient[index]
-                              : kClientList[index],
+                          kClient: isSearching ? kClient.searchClient[index] : kClient.kClientList[index],
                           isClicked: isSearching
-                              ? searchClient[index].id == kClient.current?.id
-                              : kClientList[index].id == kClient.current?.id,
+                              ? kClient.searchClient[index].id == kClient.current?.id
+                              : kClient.kClientList[index].id == kClient.current?.id,
                         );
                       },
                     ),

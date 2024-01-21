@@ -16,6 +16,7 @@ class ClientsDetailDesktop extends StatefulWidget {
 class _ClientsDetailDesktopState extends State<ClientsDetailDesktop> {
 
   bool isEditMode = false;
+
   TextEditingController nameTEC = TextEditingController();
 
 
@@ -23,6 +24,16 @@ class _ClientsDetailDesktopState extends State<ClientsDetailDesktop> {
   @override
   Widget build(BuildContext context) {
     return Consumer<KClientProvider>(builder: (context, kClientProvider, child) {
+      if(kClientProvider.isNew){
+        isEditMode = true;
+        nameTEC.text = kClientProvider.current?.name ?? "";
+        nameTEC.selection = TextSelection(
+          baseOffset: 0,
+          extentOffset: nameTEC.text.length,
+        );
+        kClientProvider.isNew = false;
+      }
+
       return Expanded(
         child:  Column(
           children: [

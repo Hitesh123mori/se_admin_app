@@ -49,18 +49,15 @@ class Facility {
     return null;
   }
 
-  bool addToDB(){
-    _collectionRef.add(toJson())
-        .then((value) {
-      id = value.id;
-      print("added");
-      return true;
-    })
-        .onError((error, stackTrace) {
-      print(error);
-      return false;
-    });
-    return false;
+  Future<void> delete(FacilityProvider provider) async {
+    await _collectionRef.doc(id).delete();
+    provider.notify();
+  }
+
+  Future<void> add() async {
+    final docRef = _collectionRef.doc();
+    id = docRef.id;
+    await docRef.set(toJson());
   }
 
   Future<void> update()async{

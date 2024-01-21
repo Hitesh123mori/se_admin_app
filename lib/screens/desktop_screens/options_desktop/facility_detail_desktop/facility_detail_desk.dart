@@ -14,24 +14,46 @@ class FacilityDetailDesktop extends StatefulWidget {
 }
 
 class _FacilityDetailDesktopState extends State<FacilityDetailDesktop> {
-
   bool isEditMode = false;
   TextEditingController nameTEC = TextEditingController();
   TextEditingController descriptionTEC = TextEditingController();
 
+  final _focusNode = FocusNode();
+
+  @override
+  initState() {
+    super.initState();
+    _focusNode.addListener(() {
+      if(_focusNode.hasFocus) {
+        descriptionTEC.selection = TextSelection(baseOffset: 0, extentOffset: descriptionTEC.text.length);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Consumer<FacilityProvider>(builder: (context, facilityProvider, child) {
+    return Consumer<FacilityProvider>(
+        builder: (context, facilityProvider, child) {
+      if (facilityProvider.isNew) {
+        isEditMode = true;
+        nameTEC.text = facilityProvider.current?.name ?? "";
+        descriptionTEC.text = facilityProvider.current?.discription ?? "";
+
+        nameTEC.selection = TextSelection(
+          baseOffset: 0,
+          extentOffset: nameTEC.text.length,
+        );
+
+        facilityProvider.isNew = false;
+      }
       return Expanded(
-        child:  Column(
+        child: Column(
           children: [
             Row(
               children: [
                 Expanded(
                   child: Container(
-                    constraints: const BoxConstraints(
-                        minHeight: 50
-                    ),
+                    constraints: const BoxConstraints(minHeight: 50),
                     decoration: BoxDecoration(
                       color: AppColors.theme['tertiaryColor'],
                       borderRadius: BorderRadius.circular(10),
@@ -43,30 +65,30 @@ class _FacilityDetailDesktopState extends State<FacilityDetailDesktop> {
                     child: Center(
                       child: !isEditMode
                           ? Text(
-                        facilityProvider.current?.name ?? '',
-                        style: TextStyle(
-                            fontSize: 16,
-                            color: AppColors.theme['secondaryColor']),
-                      )
+                              facilityProvider.current?.name ?? '',
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  color: AppColors.theme['secondaryColor']),
+                            )
                           : TextFormField(
-                        cursorColor: AppColors.theme['highlightColor'],
-                        decoration:InputDecoration(
-                            border: const OutlineInputBorder(
-                              borderSide: BorderSide.none,
+                              cursorColor: AppColors.theme['highlightColor'],
+                              decoration: InputDecoration(
+                                  border: const OutlineInputBorder(
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  fillColor: AppColors.theme['tertiaryColor']),
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: AppColors.theme['secondaryColor']),
+                              controller: nameTEC,
+                              autofocus: true,
                             ),
-                            fillColor: AppColors.theme['tertiaryColor']
-                        ),
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            color: AppColors.theme['secondaryColor']
-                        ),
-                        controller: nameTEC,
-                        autofocus: true,
-                      ),
                     ),
                   ),
                 ),
-                SizedBox(width: mq.width * 0.007,),
+                SizedBox(
+                  width: mq.width * 0.007,
+                ),
                 Padding(
                   padding: EdgeInsets.only(right: mq.width * 0.007),
                   child: ElevatedButton(
@@ -74,13 +96,15 @@ class _FacilityDetailDesktopState extends State<FacilityDetailDesktop> {
                       setState(() {
                         if (isEditMode) {
                           facilityProvider.current?.name = nameTEC.text;
-                          facilityProvider.current?.discription = descriptionTEC.text;
+                          facilityProvider.current?.discription =
+                              descriptionTEC.text;
                           print("#ID ${facilityProvider.current?.id}");
                           facilityProvider.current?.update();
                         }
                         isEditMode = !isEditMode;
                         nameTEC.text = facilityProvider.current?.name ?? "";
-                        descriptionTEC.text = facilityProvider.current?.discription ?? "";
+                        descriptionTEC.text =
+                            facilityProvider.current?.discription ?? "";
                       });
                     },
                     style: ElevatedButton.styleFrom(
@@ -109,7 +133,7 @@ class _FacilityDetailDesktopState extends State<FacilityDetailDesktop> {
             ),
             Expanded(
               child: Padding(
-                padding:  EdgeInsets.only(right: mq.width * 0.007),
+                padding: EdgeInsets.only(right: mq.width * 0.007),
                 child: Container(
                   decoration: BoxDecoration(
                     color: AppColors.theme['tertiaryColor'],
@@ -122,63 +146,68 @@ class _FacilityDetailDesktopState extends State<FacilityDetailDesktop> {
                   child: facilityProvider.current == null
                       ? Container()
                       : SizedBox(
-                    width: mq.width*1,
-                    height: mq.height*1,
-                    child: SingleChildScrollView(
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Column(
+                          width: mq.width * 1,
+                          height: mq.height * 1,
+                          child: SingleChildScrollView(
+                            child: Row(
                               children: [
-
-                                !isEditMode
-                                    ? Text(
-                                  facilityProvider.current?.discription ?? '',
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      color: AppColors.theme['secondaryColor']),
-                                )
-                                    : TextFormField(
-                                  cursorColor: AppColors.theme['highlightColor'],
-                                  keyboardType: TextInputType.multiline,
-                                  maxLines: null,
-
-                                  decoration:InputDecoration(
-                                      border: const OutlineInputBorder(
-                                        borderSide: BorderSide.none,
-                                      ),
-                                      fillColor: AppColors.theme['tertiaryColor'],
-
-
+                                Expanded(
+                                  child: Column(
+                                    children: [
+                                      !isEditMode
+                                          ? Text(
+                                              facilityProvider
+                                                      .current?.discription ??
+                                                  '',
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  color: AppColors
+                                                      .theme['secondaryColor']),
+                                            )
+                                          : TextFormField(
+                                              cursorColor: AppColors
+                                                  .theme['highlightColor'],
+                                              keyboardType:
+                                                  TextInputType.multiline,
+                                              maxLines: null,
+                                              decoration: InputDecoration(
+                                                border:
+                                                    const OutlineInputBorder(
+                                                  borderSide: BorderSide.none,
+                                                ),
+                                                fillColor: AppColors
+                                                    .theme['tertiaryColor'],
+                                              ),
+                                              textAlign: TextAlign.left,
+                                              style: TextStyle(
+                                                  color: AppColors
+                                                      .theme['secondaryColor']),
+                                              controller: descriptionTEC,
+                                        focusNode: _focusNode,
+                                            ),
+                                      StreamBuilder(
+                                          stream: facilityProvider.current!
+                                              .getImage(facilityProvider)
+                                              .asStream(),
+                                          builder: (context, snap) {
+                                            print("#snap: ${snap.data}");
+                                            if (snap.hasData) {
+                                              print("#hd: ${snap.data}");
+                                              // return Container();
+                                              return ImageDropZone(
+                                                imgFiles: snap.data,
+                                                provider: facilityProvider,
+                                              );
+                                            } else
+                                              return const CircularProgressIndicator();
+                                          }),
+                                    ],
                                   ),
-                                  textAlign: TextAlign.left,
-                                  style: TextStyle(
-                                      color: AppColors.theme['secondaryColor']
-                                  ),
-                                  controller: descriptionTEC,
-                                ),
-
-                                StreamBuilder(
-                                    stream:
-                                    facilityProvider.current!.getImage(facilityProvider).asStream(),
-                                    builder: (context, snap) {
-                                      print("#snap: ${snap.data}");
-                                      if(snap.hasData){
-                                        print("#hd: ${snap.data}");
-                                        // return Container();
-                                        return ImageDropZone(imgFiles: snap.data, provider: facilityProvider,);
-                                      }
-
-                                      else return const CircularProgressIndicator();
-                                    }
                                 ),
                               ],
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                  ),
+                        ),
                 ),
               ),
             ),

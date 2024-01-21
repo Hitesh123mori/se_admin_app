@@ -41,24 +41,34 @@ class _ProductCardState extends State<ProductCard> {
           child: Container(
             height: 55,
             color: isHover ? Colors.white10 : Colors.transparent,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  if (widget.isClicked)
-                    Container(
-                      height: 30,
-                      width: 5,
-                      color: AppColors.theme['highlightColor'],
-                    ),
-                  SizedBox(width: 10,),
-                  Text(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                if (widget.isClicked)
+                  Container(
+                    height: 30,
+                    width: 5,
+                    color: AppColors.theme['highlightColor'],
+                  ),
+                const SizedBox(width: 10,),
+
+                SizedBox(
+                  width: 190,
+                  child: Text(
                     widget.product.name,
                     softWrap: true,
                     style: TextStyle(color: AppColors.theme['secondaryColor'], fontSize: 16),
                   ),
-                ],
-              ),
+                ),
+                Expanded(child: Container()),
+
+                if(widget.isClicked)
+                  IconButton(
+                    onPressed: (){
+                      _showDeleteConfirmationDialog(context, widget.product, product);
+                    },
+                    icon: Icon(Icons.close_rounded, color: AppColors.theme['secondaryColor']))
+              ],
             ),
           ),
         ),
@@ -68,4 +78,48 @@ class _ProductCardState extends State<ProductCard> {
 
 
   }
+
+  Future<void> _showDeleteConfirmationDialog(BuildContext context, Product? product, ProductProvider provider) async {
+    return showDialog<void>(
+      context: context,
+
+      barrierDismissible: false, // Dialog cannot be dismissed by tapping outside
+      builder: (BuildContext context) {
+        return AlertDialog(
+          elevation: 5,
+          shadowColor: AppColors.theme["highlightColor"],
+          surfaceTintColor: AppColors.theme["highlightColor"],
+          backgroundColor: AppColors.theme["tertiaryColor"],
+          title: Text('Delete Confirmation', style: TextStyle(color: AppColors.theme['secondaryColor']),),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Are you sure you want to delete ${product?.name ?? ''}?',
+                  style: TextStyle(color: AppColors.theme['secondaryColor']),
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text('Cancel',style: TextStyle(color: AppColors.theme['secondaryColor']),),
+            ),
+            TextButton(
+              onPressed: () {
+                product?.delete(provider);
+                provider.current = null;
+                if(product != null) provider.removeFromSearchList(product);
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: const Text('Delete', style: TextStyle(color: Colors.redAccent, fontSize: 16),),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 }

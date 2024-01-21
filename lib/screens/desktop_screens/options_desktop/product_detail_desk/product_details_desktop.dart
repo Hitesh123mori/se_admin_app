@@ -22,6 +22,16 @@ class _ProductDetailDesktopState extends State<ProductDetailDesktop> {
   @override
   Widget build(BuildContext context) {
     return Consumer<ProductProvider>(builder: (context, productPro, child) {
+      if(productPro.isNew){
+        isEditMode = true;
+        nameTEC.text = productPro.current?.name ?? "";
+        nameTEC.selection = TextSelection(
+          baseOffset: 0,
+          extentOffset: nameTEC.text.length,
+        );
+        productPro.isNew = false;
+      }
+
       return Expanded(
         child:  Column(
             children: [
@@ -49,6 +59,7 @@ class _ProductDetailDesktopState extends State<ProductDetailDesktop> {
                                     color: AppColors.theme['secondaryColor']),
                               )
                             : TextFormField(
+
                               cursorColor: AppColors.theme['highlightColor'],
                               decoration:InputDecoration(
                                 border: const OutlineInputBorder(
@@ -77,6 +88,7 @@ class _ProductDetailDesktopState extends State<ProductDetailDesktop> {
                             // print("#ID ${productPro.current?.id}");
                             productPro.current?.update();
                           }
+
                           isEditMode = !isEditMode;
                           nameTEC.text = productPro.current?.name ?? "";
                         });

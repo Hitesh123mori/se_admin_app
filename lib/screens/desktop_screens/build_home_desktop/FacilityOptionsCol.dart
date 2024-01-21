@@ -16,9 +16,7 @@ class FacilityOptionsCol extends StatefulWidget {
 
 class _FacilityOptionsColState extends State<FacilityOptionsCol> {
   bool isSearching = false;
-  List<Facility> searchFacility = [];
-  List<Facility> facilityList = [];
-  final TextEditingController _controller = TextEditingController() ;
+  final TextEditingController _controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -54,27 +52,26 @@ class _FacilityOptionsColState extends State<FacilityOptionsCol> {
                             onTap: () {
                               setState(() {
                                 isSearching = true;
+                                facilityPro.searchFacility = facilityPro.facilityList;
                               });
                             },
                             onChanged: (value) {
                               setState(() {
-                                searchFacility = facilityList
-                                    .where((facility) => facility.name
-                                    .toLowerCase()
-                                    .contains(value.toLowerCase()))
-                                    .toList();
+                                if (value == "") {
+                                  facilityPro.searchFacility = facilityPro.facilityList;
+                                } else {
+                                  facilityPro.updateSearchList(value.toLowerCase());
+                                }
                               });
                             },
                             cursorColor: AppColors.theme['highlightColor'],
-                            style: TextStyle(
-                                color: AppColors.theme['secondaryColor']),
-                            textAlign: TextAlign.center,
+                            style: TextStyle(color: AppColors.theme['secondaryColor']),
+                            textAlign: TextAlign.start,
                             autocorrect: true,
                             autovalidateMode: AutovalidateMode.always,
                             decoration: InputDecoration(
                               hintText: 'Search Here',
-                              hintStyle: TextStyle(
-                                  color: AppColors.theme['secondaryColor']),
+                              hintStyle: TextStyle(color: AppColors.theme['secondaryColor']),
                               border: const OutlineInputBorder(
                                 borderSide: BorderSide.none,
                               ),
@@ -88,14 +85,21 @@ class _FacilityOptionsColState extends State<FacilityOptionsCol> {
                   ),
                 ),
                 InkWell(
-                  onTap: isSearching ? (){
-                    setState(() {
-                      isSearching = false ;
-                      _controller.text = '' ;
-
-                    });
-                  }:
-                      () {},
+                  onTap: isSearching
+                      ? () {
+                          setState(() {
+                            isSearching = false;
+                            _controller.text = '';
+                          });
+                        }
+                      : () {
+                          // for add new product
+                          Facility newFacility = Facility(name: "New facility", discription: "Click here to add description here", imagePath: "");
+                          newFacility.add();
+                          facilityPro.isNew = true;
+                          facilityPro.current = newFacility;
+                          facilityPro.notify();
+                        },
                   child: Container(
                       decoration: BoxDecoration(
                           border: Border.all(color: Colors.white24),
@@ -104,8 +108,7 @@ class _FacilityOptionsColState extends State<FacilityOptionsCol> {
                       height: 50,
                       width: 50,
                       child: Icon(
-                        isSearching ?Icons.cancel_outlined :
-                        Icons.add,
+                        isSearching ? Icons.cancel_outlined : Icons.add,
                         color: AppColors.theme['secondaryColor'],
                         size: 25,
                       )),
@@ -128,9 +131,7 @@ class _FacilityOptionsColState extends State<FacilityOptionsCol> {
               width: mq.width * 0.15,
               height: mq.height * 1,
               child: StreamBuilder(
-                stream: FirebaseFirestore.instance
-                    .collection('facilities')
-                    .snapshots(),
+                stream: FirebaseFirestore.instance.collection('facilities').snapshots(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
                     return Center(
@@ -140,11 +141,11 @@ class _FacilityOptionsColState extends State<FacilityOptionsCol> {
                     );
                   }
                   final data = snapshot.data?.docs;
-                  facilityList = data?.map((e) => Facility.fromJson(e.data())).toList() ?? [];
+                  facilityPro.facilityList = data?.map((e) => Facility.fromJson(e.data())).toList() ?? [];
 
                   // if(facilityList.isNotEmpty) facilityPro.updateCurrent(facilityList.first);
 
-                  if (facilityList.isEmpty) {
+                  if (facilityPro.facilityList.isEmpty) {
                     return const Center(
                       child: Text(
                         "No facility found",
@@ -152,7 +153,7 @@ class _FacilityOptionsColState extends State<FacilityOptionsCol> {
                       ),
                     );
                   }
-                  if (isSearching && searchFacility.isEmpty) {
+                  if (isSearching && facilityPro.searchFacility.isEmpty) {
                     return const Center(
                       child: Text(
                         "No search results found",
@@ -165,17 +166,13 @@ class _FacilityOptionsColState extends State<FacilityOptionsCol> {
                     child: ListView.builder(
                       shrinkWrap: true,
                       physics: const BouncingScrollPhysics(),
-                      itemCount: isSearching
-                          ? searchFacility.length
-                          : facilityList.length,
+                      itemCount: isSearching ? facilityPro.searchFacility.length : facilityPro.facilityList.length,
                       itemBuilder: (context, index) {
                         return FacilityCard(
-                          facility: isSearching
-                              ? searchFacility[index]
-                              : facilityList[index],
+                          facility: isSearching ? facilityPro.searchFacility[index] : facilityPro.facilityList[index],
                           isClicked: isSearching
-                              ? searchFacility[index].id == facilityPro.current?.id
-                              : facilityList[index].id == facilityPro.current?.id,
+                              ? facilityPro.searchFacility[index].id == facilityPro.current?.id
+                              : facilityPro.facilityList[index].id == facilityPro.current?.id,
                         );
                       },
                     ),
