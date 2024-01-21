@@ -125,53 +125,57 @@ class _FacilityDetailDesktopState extends State<FacilityDetailDesktop> {
                     width: mq.width*1,
                     height: mq.height*1,
                     child: SingleChildScrollView(
-                      child: Expanded(
-                        child: Column(
-                          children: [
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              children: [
 
-                            !isEditMode
-                                ? Text(
-                              facilityProvider.current?.discription ?? '',
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  color: AppColors.theme['secondaryColor']),
-                            )
-                                : TextFormField(
-                              cursorColor: AppColors.theme['highlightColor'],
-                              keyboardType: TextInputType.multiline,
-                              maxLines: null,
+                                !isEditMode
+                                    ? Text(
+                                  facilityProvider.current?.discription ?? '',
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      color: AppColors.theme['secondaryColor']),
+                                )
+                                    : TextFormField(
+                                  cursorColor: AppColors.theme['highlightColor'],
+                                  keyboardType: TextInputType.multiline,
+                                  maxLines: null,
 
-                              decoration:InputDecoration(
-                                  border: const OutlineInputBorder(
-                                    borderSide: BorderSide.none,
+                                  decoration:InputDecoration(
+                                      border: const OutlineInputBorder(
+                                        borderSide: BorderSide.none,
+                                      ),
+                                      fillColor: AppColors.theme['tertiaryColor'],
+
+
                                   ),
-                                  fillColor: AppColors.theme['tertiaryColor'],
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                      color: AppColors.theme['secondaryColor']
+                                  ),
+                                  controller: descriptionTEC,
+                                ),
 
+                                StreamBuilder(
+                                    stream:
+                                    facilityProvider.current!.getImage(facilityProvider).asStream(),
+                                    builder: (context, snap) {
+                                      print("#snap: ${snap.data}");
+                                      if(snap.hasData){
+                                        print("#hd: ${snap.data}");
+                                        // return Container();
+                                        return ImageDropZone(imgFiles: snap.data, provider: facilityProvider,);
+                                      }
 
-                              ),
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                  color: AppColors.theme['secondaryColor']
-                              ),
-                              controller: descriptionTEC,
+                                      else return const CircularProgressIndicator();
+                                    }
+                                ),
+                              ],
                             ),
-
-                            StreamBuilder(
-                                stream:
-                                facilityProvider.current!.getImage(facilityProvider).asStream(),
-                                builder: (context, snap) {
-                                  print("#snap: ${snap.data}");
-                                  if(snap.hasData){
-                                    print("#hd: ${snap.data}");
-                                    // return Container();
-                                    return ImageDropZone(imgFiles: snap.data, provider: facilityProvider,);
-                                  }
-
-                                  else return const CircularProgressIndicator();
-                                }
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                   ),

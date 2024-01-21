@@ -124,27 +124,31 @@ class _ClientsDetailDesktopState extends State<ClientsDetailDesktop> {
                     width: mq.width*1,
                     height: mq.height*1,
                     child: SingleChildScrollView(
-                      child: Expanded(
-                        child: Column(
-                          children: [
-                            StreamBuilder(
-                                stream:
-                                kClientProvider.current!.getImage(kClientProvider).asStream(),
-                                builder: (context, snap) {
-                                  // print("#snap: ${snap.data}");
-                                  if(snap.hasData){
-                                    // print("#hd: ${snap.data}");
-                                    // return Container();
-                                    return ImageDropZone(imgFiles: snap.data, provider: kClientProvider,);
-                                  }
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              children: [
+                                StreamBuilder(
+                                    stream:
+                                    kClientProvider.current!.getImage(kClientProvider).asStream(),
+                                    builder: (context, snap) {
+                                      // print("#snap: ${snap.data}");
+                                      if(snap.hasData){
+                                        // print("#hd: ${snap.data}");
+                                        // return Container();
+                                        return ImageDropZone(imgFiles: snap.data, provider: kClientProvider,);
+                                      }
 
-                                  else {
-                                    return const CircularProgressIndicator();
-                                  }
-                                }
+                                      else {
+                                        return const CircularProgressIndicator();
+                                      }
+                                    }
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
