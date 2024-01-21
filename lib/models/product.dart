@@ -1,5 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
+import 'package:se_admin_app/Providers/ProductProvider.dart';
 import 'package:se_admin_app/apis/FirebaseAPI.dart';
+import 'package:se_admin_app/models/ImageModel.dart';
 
 class Product {
   static final _collectionRef = FirebaseAPI.dbAPI.collection("products");
@@ -12,6 +16,8 @@ class Product {
   late String name;
   late String imagePath;
   late String id;
+
+
 
   Product.fromJson(Map<String, dynamic> json) {
     name = json['name'] ?? '';
@@ -65,33 +71,42 @@ class Product {
   }
 
 
-  Future<void> uploadImage(var image)async {
-    print("#Uploading img: id: ${id}");
+  Future<ImageModel?> uploadImage(var image, ProductProvider productProvider)async {
+    print("#Uploading img: id: $id");
     var imageRef = FirebaseAPI.fireStoreAPI.child(imagePath);
 
     imagePath = "images/products/$id";
     print("#path: $imagePath");
 
-    imageRef = FirebaseAPI.fireStoreAPI.child(imagePath);
+    imageRef = FirebaseAPI.fireStoreAPI.child("$imagePath/${FirebaseAPI.uuid.v1()}");
 
 
-    imageRef.putData(image.data)
-        .then((p0) {
-      // edit in DB;
-      final docRef = _collectionRef.doc(id);
-      docRef.update({"imagePath": imagePath});
-    }).onError((error, stackTrace) {
-      print("#Error: ${stackTrace}");
-    });
+    return await imageRef.putData(image)
+        .then((p0) async {
+          final docRef = _collectionRef.doc(id);
+            return await docRef.update({"imagePath": imagePath})
+                .then((value) {
+                  productProvider.notify();
+                  return ImageModel(fullPath: p0.ref.fullPath, uri: p0.ref.getDownloadURL(), callback: () => productProvider.notify());
+                });
+        });
+        // .onError((error, stackTrace) {
+        //   print("#Error: ${stackTrace}");
+        // });
   }
 
-  Future<dynamic> getImage()async {
-    if (imagePath == "") return "null";
+  Future<dynamic> getImage(ProductProvider productProvider)async {
     final imgRef = FirebaseAPI.fireStoreAPI.child(imagePath);
 
-    var url = await imgRef.getDownloadURL();
+    return imgRef.list().then((value) {
+      List<Reference> refs = value.items;
 
-    return url;
+      print("#res: ${refs.map((e) => e.name)}");
+
+      return refs.map((e) => ImageModel(fullPath: e.fullPath, uri: e.getDownloadURL(), callback: () => productProvider.notify())).toList();
+    });
+
   }
+
 
 }

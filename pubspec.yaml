@@ -40,8 +40,10 @@ dependencies:
   image_picker_web: ^3.1.1
   html:
   firebase_storage:
-  mime_type:
-  synchronized: ^3.1.0+1
+  uuid: ^4.3.3
+  flutter_dropzone:
+  carousel_slider: ^4.2.1
+  dotted_border: ^2.1.0
 #  beamer: ^1.5.6
 #  collection: ^1.18.0
 

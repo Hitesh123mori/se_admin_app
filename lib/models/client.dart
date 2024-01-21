@@ -1,4 +1,7 @@
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:se_admin_app/Providers/KClientProvider.dart';
 import 'package:se_admin_app/apis/FirebaseAPI.dart';
+import 'package:se_admin_app/models/ImageModel.dart';
 
 class KClient {
   static final _collectionRef = FirebaseAPI.dbAPI.collection("clients");
@@ -54,5 +57,52 @@ class KClient {
         });
     return false;
   }
+
+
+  Future<void> update()async{
+    final docRef = _collectionRef.doc(id);
+    docRef.update({"name": name}).onError((error, stackTrace) {
+      print("#error $error $stackTrace");
+    });
+  }
+
+
+  Future<ImageModel?> uploadImage(var image, KClientProvider kClientProvider)async {
+    print("#Uploading img: id: $id");
+    var imageRef = FirebaseAPI.fireStoreAPI.child(imagePath);
+
+    imagePath = "images/kclient/$id";
+    print("#path: $imagePath");
+
+    imageRef = FirebaseAPI.fireStoreAPI.child("$imagePath/${FirebaseAPI.uuid.v1()}");
+
+
+    return await imageRef.putData(image)
+        .then((p0) async {
+      final docRef = _collectionRef.doc(id);
+      return await docRef.update({"imagePath": imagePath})
+          .then((value) {
+        kClientProvider.notify();
+        return ImageModel(fullPath: p0.ref.fullPath, uri: p0.ref.getDownloadURL(), callback: () => kClientProvider.notify());
+      });
+    });
+    // .onError((error, stackTrace) {
+    //   print("#Error: ${stackTrace}");
+    // });
+  }
+
+  Future<dynamic> getImage(KClientProvider kClientProvider)async {
+    final imgRef = FirebaseAPI.fireStoreAPI.child(imagePath);
+
+    return imgRef.list().then((value) {
+      List<Reference> refs = value.items;
+
+      print("#res: ${refs.map((e) => e.name)}");
+
+      return refs.map((e) => ImageModel(fullPath: e.fullPath, uri: e.getDownloadURL(), callback: () => kClientProvider.notify())).toList();
+    });
+
+  }
+
 }
 

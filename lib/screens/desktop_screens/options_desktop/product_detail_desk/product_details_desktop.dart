@@ -1,14 +1,10 @@
-import 'dart:async';
-
 import 'package:provider/provider.dart';
-import 'package:se_admin_app/Providers/ProductProvider.dart';
-import 'package:se_admin_app/main.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker_web/image_picker_web.dart';
-import 'package:se_admin_app/utils/colors.dart';
-import 'package:synchronized/synchronized.dart';
 
-import 'package:se_admin_app/models/product.dart';
+import 'package:se_admin_app/main.dart';
+import 'package:se_admin_app/Providers/ProductProvider.dart';
+import 'package:se_admin_app/utils/colors.dart';
+import 'package:se_admin_app/utils/widgets/image_drop_zone.dart';
 
 class ProductDetailDesktop extends StatefulWidget {
   const ProductDetailDesktop({super.key});
@@ -18,29 +14,14 @@ class ProductDetailDesktop extends StatefulWidget {
 }
 
 class _ProductDetailDesktopState extends State<ProductDetailDesktop> {
-  Product? current;
 
   bool isEditMode = false;
   TextEditingController nameTEC = TextEditingController();
 
-  Future<void> getImage() async {
-    var mediaData = await ImagePickerWeb.getImageInfo;
-
-    print("#img: ${mediaData?.fileName}");
-    if (mediaData?.data == null) return;
-
-    await current?.uploadImage(mediaData);
-
-    setState(() {
-      print("ok");
-    });
-    // print("#path: ${imageFile?.name}");
-  }
 
   @override
   Widget build(BuildContext context) {
     return Consumer<ProductProvider>(builder: (context, productPro, child) {
-      current = productPro.current;
       return Expanded(
         child:  Column(
             children: [
@@ -48,7 +29,7 @@ class _ProductDetailDesktopState extends State<ProductDetailDesktop> {
                 children: [
                   Expanded(
                     child: Container(
-                      constraints: BoxConstraints(
+                      constraints: const BoxConstraints(
                         minHeight: 50
                       ),
                       decoration: BoxDecoration(
@@ -70,7 +51,7 @@ class _ProductDetailDesktopState extends State<ProductDetailDesktop> {
                             : TextFormField(
                               cursorColor: AppColors.theme['highlightColor'],
                               decoration:InputDecoration(
-                                border: OutlineInputBorder(
+                                border: const OutlineInputBorder(
                                   borderSide: BorderSide.none,
                                 ),
                                 fillColor: AppColors.theme['tertiaryColor']
@@ -93,7 +74,7 @@ class _ProductDetailDesktopState extends State<ProductDetailDesktop> {
                         setState(() {
                           if (isEditMode) {
                             productPro.current?.name = nameTEC.text;
-                            print("#ID ${productPro.current?.id}");
+                            // print("#ID ${productPro.current?.id}");
                             productPro.current?.update();
                           }
                           isEditMode = !isEditMode;
@@ -138,67 +119,31 @@ class _ProductDetailDesktopState extends State<ProductDetailDesktop> {
                     ),
                     child: productPro.current == null
                         ? Container()
-                        : Container(
+                        : SizedBox(
                            width: mq.width*1,
+                          height: mq.height*1,
                           child: SingleChildScrollView(
                             child: Expanded(
                               child: Column(
-                                  children: [
-                                    TextButton(
-                                        onPressed: () async {
-                                          await getImage();
-                                          productPro.notify();
-                                          await Future.delayed(
-                                              const Duration(seconds: 5), () {
-                                            setState(() {});
-                                          });
-                                          print("#com");
-                                        },
-                                        child: const Text("upload Image")),
-                                    StreamBuilder(
-                                        stream:
-                                            productPro.current!.getImage().asStream(),
-                                        builder: (context, snap) {
-                                          if (snap.connectionState !=
-                                              ConnectionState.done) {
-                                            return const CircularProgressIndicator();
-                                          }
-                                          if (snap.hasData) {
-                                            if (snap.data == "null")
-                                              return const Text(
-                                                "no Image",
-                                                style: TextStyle(color: Colors.white),
-                                              );
-                                            print("#dbImg ${snap.data}");
-                                            return Image.network(
-                                              snap.data,
-                                              // height: mq.height * .4,
-                                              // width: mq.width * .6,
-                                              loadingBuilder:
-                                                  (context, child, loadingProcess) {
-                                                if (loadingProcess == null) {
-                                                  return child;
-                                                } else {
-                                                  return const CircularProgressIndicator();
-                                                }
-                                              },
-                                            );
-                                          } else if (snap.hasError) {
-                                            print(
-                                                "#PDD-error: ${snap.error} ${snap.stackTrace}");
-                                            return const Text(
-                                              "Error",
-                                              style: TextStyle(color: Colors.white),
-                                            );
-                                          } else {
-                                            return const Text(
-                                              "no Image",
-                                              style: TextStyle(color: Colors.white),
-                                            );
-                                          }
-                                        })
-                                  ],
-                                ),
+                                children: [
+                                  StreamBuilder(
+                                      stream:
+                                            productPro.current!.getImage(productPro).asStream(),
+                                      builder: (context, snap) {
+                                        // print("#snap: ${snap.data}");
+                                        if(snap.hasData){
+                                          // print("#hd: ${snap.data}");
+                                          // return Container();
+                                          return ImageDropZone(imgFiles: snap.data, provider: productPro,);
+                                        }
+
+                                        else {
+                                          return const CircularProgressIndicator();
+                                        }
+                                        }
+                                      ),
+                                ],
+                              ),
                             ),
                           ),
                         ),

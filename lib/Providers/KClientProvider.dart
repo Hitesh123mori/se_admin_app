@@ -9,4 +9,7 @@ class KClientProvider extends ChangeNotifier{
     current = newKClient;
     notifyListeners();
   }
+  void notify(){
+    notifyListeners();
+  }
 }

@@ -1,23 +1,33 @@
+import 'package:se_admin_app/apis/FirebaseAPI.dart';
+
 /// id : "a"
 /// path : "p"
 
 class ImageModel {
   ImageModel({
-      this.id, 
-      this.path,});
+      this.fullPath,
+      this.uri,
+      this.callback
+  });
 
   ImageModel.fromJson(dynamic json) {
-    id = json['id'];
-    path = json['path'];
+    fullPath = json['fullPath'];
+    uri = json['uri'];
   }
-  String? id;
-  String? path;
+  String? fullPath;
+  Future<String>? uri;
+  void Function()? callback;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
-    map['id'] = id;
-    map['path'] = path;
+    map['fullPath'] = fullPath;
+    map['uri'] = uri;
     return map;
   }
 
+  Future<void> delete()async {
+    if(fullPath == null) return;
+    FirebaseAPI.fireStoreAPI.child(fullPath!).delete();
+    callback!;
+  }
 }

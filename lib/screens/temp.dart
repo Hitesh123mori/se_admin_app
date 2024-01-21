@@ -1,97 +1,69 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:se_admin_app/Providers/ProductProvider.dart';
-import 'package:se_admin_app/models/product.dart';
+import 'package:flutter_dropzone/flutter_dropzone.dart';
+import 'dart:typed_data';
 
-import '../utils/widgets/product_card.dart';
-
-class MyScreen extends StatefulWidget {
+class MyDropzoneView extends StatefulWidget {
   @override
-  _MyScreenState createState() => _MyScreenState();
+  _MyDropzoneViewState createState() => _MyDropzoneViewState();
 }
 
-class _MyScreenState extends State<MyScreen> {
-  String searchText = "";
-  bool firstTimeLoad = true;
-
+class _MyDropzoneViewState extends State<MyDropzoneView> {
+  late DropzoneViewController controller;
+  List<Uint8List> bytes = [];
+  List<String> allowedFileType = ['.png', '.jpg', '.jpeg', '.gif'];
+  
   @override
   Widget build(BuildContext context) {
-    return Consumer<ProductProvider>(builder: (context, product, child){
-
-       return Scaffold(
-        appBar: AppBar(
-          title: Text('Firebase Data with Search'),
-        ),
-        body: Container(
-        color: Colors.black,
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextField(
-                onChanged: (value) {
-                  setState(() {
-                    searchText = value; // Convert to lowercase
-                    firstTimeLoad = true;
-                    print("===================================");
-                  });
-                },
-                decoration: InputDecoration(
-                  labelText: 'Search',
+    return Center(
+      child: Stack(
+        children: [
+          if (bytes.isNotEmpty)
+            Container(
+              color: Colors.red,
+              child: CarouselSlider.builder(
+                itemCount: bytes.length,
+                itemBuilder: (BuildContext context, int itemIndex, int pageViewIndex) =>
+                    Image.memory(bytes[itemIndex]),
+                options: CarouselOptions(
+                  autoPlay: bytes.length != 1,
+                  enlargeCenterPage: true,
+                  viewportFraction: 1,
+                  aspectRatio: 2.0,
+                  initialPage: 0,
                 ),
               ),
             ),
-            Expanded(
-              child: StreamBuilder(
-                stream: FirebaseFirestore.instance
-                    .collection('products')
-                    .where('name',
-                    isGreaterThanOrEqualTo: searchText)
-                    .where('name', isLessThan: searchText + 'z')
-                    .snapshots(),
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return CircularProgressIndicator();
+
+
+
+          Expanded(
+            child: Container(
+              // color: Colors.yellow,
+              child:DropzoneView(
+                onCreated: (controller) => this.controller = controller,
+                onDrop: (file) async {
+                  // Handle the dropped file
+            
+                  String fileExtension = file.name.split('.').last.toLowerCase();
+                  if(allowedFileType.contains('.$fileExtension')) {
+                    bytes.add(await controller.getFileData(file));print("#file: $file ${file.name}");
                   }
-
-
-
-                  var documents = snapshot.data?.docs;
-                  print("#doc: ${documents!.first['name']}");
-
-                  if(documents?.length == 0){
-                    return Text("No match found", style: TextStyle(color: Colors.white),);
-                  }
-
-                  if(firstTimeLoad) {
-                    product.current = Product.fromJson(documents!.first.data());
-                    if(product.current!.name.contains(searchText)) firstTimeLoad = false;
-                  }
-
-                  print("#cp: ${product.current?.id}");
-
-                  return ListView.builder(
-                    itemCount: documents?.length,
-                    itemBuilder: (context, index) {
-                      var document = documents?[index];
-                      var pro = Product.fromJson(document!.data());
-                      // Build your UI here using the document data
-                      return ProductCard(
-                        product: pro,
-                        isClicked: pro.id==product.current?.id,
-                      );
-                    },
-                  );
+                  setState(() {
+                  });
                 },
+            
+                operation: DragOperation.copy,
+                cursor: CursorType.grab,
+                onHover: () => print('File is over the drop zone!'),
               ),
             ),
-          ],
-        ),
+          ),
+
+
+
+        ],
       ),
     );
-
-    });
-
   }
 }

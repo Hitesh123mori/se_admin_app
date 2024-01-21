@@ -50,6 +50,7 @@ class _AdminAppState extends State<AdminApp> {
       ),
 
       home: PlatformDefine(),
+      // home: MyDropzoneView(),
     );
 
   }

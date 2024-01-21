@@ -9,4 +9,7 @@ class FacilityProvider extends ChangeNotifier{
     current = newFacility;
     notifyListeners();
   }
+  void notify(){
+    notifyListeners();
+  }
 }
