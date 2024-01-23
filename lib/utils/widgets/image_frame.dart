@@ -49,13 +49,12 @@ class _ImageFrameState extends State<ImageFrame> {
                     snap.data.toString(),
                     width: mq.width,
                     height: mq.height*0.65,
-
                     loadingBuilder:
                         (context, child, loadingProcess) {
                       if (loadingProcess == null) {
                         return child;
                       } else {
-                        return const CircularProgressIndicator();
+                        return  CircularProgressIndicator(color: AppColors.theme['highlightColor'],);
                       }
                     },
                   );

@@ -178,7 +178,7 @@ class _InfoDesktopState extends State<InfoDesktop> {
                                             }).toList(),
                                           );
                                         } else
-                                          return CircularProgressIndicator();
+                                          return CircularProgressIndicator(color: AppColors.theme['highlightColor'],);
                                       })
                                 ],
                               ),

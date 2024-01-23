@@ -16,9 +16,6 @@ import '../../main.dart';
 import '../../utils/colors.dart';
 import 'package:se_admin_app/screens/desktop_screens/build_home_desktop/appbar_desktop.dart';
 import 'package:se_admin_app/screens/desktop_screens/build_home_desktop/build_main_menubar_desktop.dart';
-
-import 'options_desktop/basic_info_options_desktop/about_us_desktop.dart';
-import 'options_desktop/basic_info_options_desktop/contact_details_desktop.dart';
 import 'options_desktop/basic_info_options_desktop/info_desktop.dart';
 import 'options_desktop/facility_detail_desktop/facility_detail_desk.dart';
 import 'options_desktop/key_clients_desktop/key_clients_desk.dart';
@@ -59,7 +56,6 @@ class _HomeScreenDesktop2State extends State<HomeScreenDesktop2> {
                   if (mainOp.current == "Facilities") const FacilityOptionsCol(),
                   if (mainOp.current == "Clients") const KClientOptionsCol(),
                   SizedBox(width: mq.width * 0.007,),
-
                   if (mainOp.current == "Primary Information") const InfoDesktop(),
                   if (mainOp.current == "Products") const ProductDetailDesktop(),
                   if (mainOp.current == "Facilities") const FacilityDetailDesktop(),
