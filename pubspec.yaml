@@ -44,6 +44,7 @@ dependencies:
   flutter_dropzone:
   carousel_slider: ^4.2.1
   dotted_border: ^2.1.0
+  fluttertoast: ^8.2.4
 #  beamer: ^1.5.6
 #  collection: ^1.18.0
 

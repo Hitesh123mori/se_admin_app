@@ -24,8 +24,9 @@ class _FacilityDetailDesktopState extends State<FacilityDetailDesktop> {
   initState() {
     super.initState();
     _focusNode.addListener(() {
-      if(_focusNode.hasFocus) {
-        descriptionTEC.selection = TextSelection(baseOffset: 0, extentOffset: descriptionTEC.text.length);
+      if (_focusNode.hasFocus) {
+        descriptionTEC.selection = TextSelection(
+            baseOffset: 0, extentOffset: descriptionTEC.text.length);
       }
     });
   }
@@ -38,7 +39,6 @@ class _FacilityDetailDesktopState extends State<FacilityDetailDesktop> {
         isEditMode = true;
         nameTEC.text = facilityProvider.current?.name ?? "";
         descriptionTEC.text = facilityProvider.current?.discription ?? "";
-
         nameTEC.selection = TextSelection(
           baseOffset: 0,
           extentOffset: nameTEC.text.length,
@@ -155,35 +155,66 @@ class _FacilityDetailDesktopState extends State<FacilityDetailDesktop> {
                                   child: Column(
                                     children: [
                                       !isEditMode
-                                          ? Text(
-                                              facilityProvider
-                                                      .current?.discription ??
-                                                  '',
-                                              style: TextStyle(
-                                                  fontSize: 16,
-                                                  color: AppColors
-                                                      .theme['secondaryColor']),
-                                            )
-                                          : TextFormField(
-                                              cursorColor: AppColors
-                                                  .theme['highlightColor'],
-                                              keyboardType:
-                                                  TextInputType.multiline,
-                                              maxLines: null,
-                                              decoration: InputDecoration(
-                                                border:
-                                                    const OutlineInputBorder(
-                                                  borderSide: BorderSide.none,
+                                          ? Padding(
+                                              padding: const EdgeInsets.all(20),
+                                              child: Container(
+                                                width: mq.width,
+                                                // height: 200,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  border: Border.all(
+                                                    color: Colors.white24,
+                                                  ),
                                                 ),
-                                                fillColor: AppColors
-                                                    .theme['tertiaryColor'],
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(10),
+                                                  child: Text(
+                                                    facilityProvider.current
+                                                            ?.discription ??
+                                                        '',
+                                                    style: TextStyle(
+                                                        fontSize: 16,
+                                                        color: AppColors.theme[
+                                                            'secondaryColor']),
+                                                  ),
+                                                ),
                                               ),
-                                              textAlign: TextAlign.left,
-                                              style: TextStyle(
-                                                  color: AppColors
-                                                      .theme['secondaryColor']),
-                                              controller: descriptionTEC,
-                                        focusNode: _focusNode,
+                                            )
+                                          : Padding(
+                                              padding: const EdgeInsets.all(20),
+                                              child: Container(
+                                                width: mq.width,
+                                                // height: 200,
+                                                decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(10),
+                                                  border: Border.all(
+                                                      color: Colors.white24),
+                                                ),
+                                                child: TextFormField(
+                                                  cursorColor: AppColors
+                                                      .theme['highlightColor'],
+                                                  keyboardType:
+                                                      TextInputType.multiline,
+                                                  maxLines: null,
+                                                  decoration: InputDecoration(
+                                                    border:
+                                                        const OutlineInputBorder(
+                                                      borderSide:
+                                                          BorderSide.none,
+                                                    ),
+                                                    fillColor: AppColors
+                                                        .theme['tertiaryColor'],
+                                                  ),
+                                                  textAlign: TextAlign.left,
+                                                  style: TextStyle(
+                                                      color: AppColors.theme[
+                                                          'secondaryColor']),
+                                                  controller: descriptionTEC,
+                                                  focusNode: _focusNode,
+                                                ),
+                                              ),
                                             ),
                                       StreamBuilder(
                                           stream: facilityProvider.current!
@@ -199,8 +230,11 @@ class _FacilityDetailDesktopState extends State<FacilityDetailDesktop> {
                                                 provider: facilityProvider,
                                               );
                                             } else
-                                              return const CircularProgressIndicator();
-                                          }),
+                                              return CircularProgressIndicator(
+                                                color: AppColors
+                                                    .theme['highlightColor'],
+                                              );
+                                          })
                                     ],
                                   ),
                                 ),

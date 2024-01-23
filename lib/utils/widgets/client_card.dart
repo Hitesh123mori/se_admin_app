@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:se_admin_app/Providers/KClientProvider.dart';
 import 'package:se_admin_app/constant/constants_provider.dart';
@@ -70,7 +71,7 @@ class _ClientCardState extends State<ClientCard> {
                         onPressed: (){
                           _showDeleteConfirmationDialog(context, widget.kClient, kClient);
                         },
-                        icon: Icon(Icons.close_rounded, color: AppColors.theme['secondaryColor']))
+                        icon: Icon(Icons.close_rounded,size: 18, color: AppColors.theme['highlightColor']))
                 ],
               ),
             ),
@@ -90,9 +91,9 @@ class _ClientCardState extends State<ClientCard> {
       builder: (BuildContext context) {
         return AlertDialog(
           elevation: 5,
-          shadowColor: AppColors.theme["highlightColor"],
-          surfaceTintColor: AppColors.theme["highlightColor"],
-          backgroundColor: AppColors.theme["tertiaryColor"],
+          shadowColor: AppColors.theme["tertiaryColor"],
+          surfaceTintColor: Colors.black,
+          backgroundColor: Colors.black,
           title: Text('Delete Confirmation', style: TextStyle(color: AppColors.theme['secondaryColor']),),
           content: SingleChildScrollView(
             child: ListBody(
@@ -116,6 +117,15 @@ class _ClientCardState extends State<ClientCard> {
                 provider.current = null;
                 if(kClient != null) provider.removeFromSearchList(kClient);
                 Navigator.of(context).pop(); // Close the dialog
+                Fluttertoast.showToast(
+                  toastLength: Toast.LENGTH_LONG,
+                  timeInSecForIosWeb: 5,
+                  msg: "${kClient!.name} Deleted",
+                  webShowClose: true,
+                  webBgColor: "#14181a",
+                  backgroundColor: Colors.black,
+                  gravity: ToastGravity.BOTTOM_RIGHT,
+                );
               },
               child: const Text('Delete', style: TextStyle(color: Colors.redAccent, fontSize: 16),),
             ),

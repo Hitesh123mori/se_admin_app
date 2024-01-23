@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:se_admin_app/Providers/ProductProvider.dart';
 
@@ -72,6 +73,8 @@ class _ProductOptionsColState extends State<ProductOptionsCol> {
                         autovalidateMode: AutovalidateMode.always,
                         decoration: InputDecoration(
                           hintText: 'Search Here',
+                          prefixIcon: Icon(Icons.search,size: 22,),
+                          prefixIconColor: AppColors.theme['secondaryColor'],
                           hintStyle: TextStyle(
                             color: AppColors.theme['secondaryColor'],
                           ),
@@ -88,12 +91,20 @@ class _ProductOptionsColState extends State<ProductOptionsCol> {
                 InkWell(
                   onTap: !isSearching
                       ? () {
-                          // for add new product
                           Product newProduct = Product(name: "New product", imagePath: "");
                           newProduct.add();
                           product.isNew = true;
                           product.current = newProduct;
                           product.notify();
+                          Fluttertoast.showToast(
+                            toastLength: Toast.LENGTH_LONG,
+                            timeInSecForIosWeb: 5,
+                            msg: "Congratulations! for new product",
+                            webShowClose: true,
+                            webBgColor: "#14181a",
+                            backgroundColor: Colors.black,
+                            gravity: ToastGravity.BOTTOM_RIGHT,
+                          );
                         }
                       : () {
                           setState(() {

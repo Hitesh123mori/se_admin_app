@@ -152,7 +152,7 @@ class _ClientsDetailDesktopState extends State<ClientsDetailDesktop> {
                                       }
 
                                       else {
-                                        return const CircularProgressIndicator();
+                                        return  CircularProgressIndicator(color: AppColors.theme['highlightColor'],);
                                       }
                                     }
                                 ),

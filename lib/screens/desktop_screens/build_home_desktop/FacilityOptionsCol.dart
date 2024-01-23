@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:se_admin_app/main.dart';
 import 'package:se_admin_app/models/facility.dart';
@@ -39,7 +40,8 @@ class _FacilityOptionsColState extends State<FacilityOptionsCol> {
                       ),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    constraints: const BoxConstraints(minWidth: 190, minHeight: 50),
+                    constraints:
+                        const BoxConstraints(minWidth: 190, minHeight: 50),
                     width: 190,
                     height: 50,
                     child: Center(
@@ -52,26 +54,37 @@ class _FacilityOptionsColState extends State<FacilityOptionsCol> {
                             onTap: () {
                               setState(() {
                                 isSearching = true;
-                                facilityPro.searchFacility = facilityPro.facilityList;
+                                facilityPro.searchFacility =
+                                    facilityPro.facilityList;
                               });
                             },
                             onChanged: (value) {
                               setState(() {
                                 if (value == "") {
-                                  facilityPro.searchFacility = facilityPro.facilityList;
+                                  facilityPro.searchFacility =
+                                      facilityPro.facilityList;
                                 } else {
-                                  facilityPro.updateSearchList(value.toLowerCase());
+                                  facilityPro
+                                      .updateSearchList(value.toLowerCase());
                                 }
                               });
                             },
                             cursorColor: AppColors.theme['highlightColor'],
-                            style: TextStyle(color: AppColors.theme['secondaryColor']),
+                            style: TextStyle(
+                                color: AppColors.theme['secondaryColor']),
                             textAlign: TextAlign.start,
                             autocorrect: true,
                             autovalidateMode: AutovalidateMode.always,
                             decoration: InputDecoration(
                               hintText: 'Search Here',
-                              hintStyle: TextStyle(color: AppColors.theme['secondaryColor']),
+                              prefixIcon: Icon(
+                                Icons.search,
+                                size: 22,
+                              ),
+                              prefixIconColor:
+                                  AppColors.theme['secondaryColor'],
+                              hintStyle: TextStyle(
+                                  color: AppColors.theme['secondaryColor']),
                               border: const OutlineInputBorder(
                                 borderSide: BorderSide.none,
                               ),
@@ -93,12 +106,23 @@ class _FacilityOptionsColState extends State<FacilityOptionsCol> {
                           });
                         }
                       : () {
-                          // for add new product
-                          Facility newFacility = Facility(name: "New facility", discription: "Click here to add description here", imagePath: "");
+                          Facility newFacility = Facility(
+                              name: "New facility",
+                              discription: "Click here to add description here",
+                              imagePath: "");
                           newFacility.add();
                           facilityPro.isNew = true;
                           facilityPro.current = newFacility;
                           facilityPro.notify();
+                          Fluttertoast.showToast(
+                            toastLength: Toast.LENGTH_LONG,
+                            timeInSecForIosWeb: 5,
+                            msg: "Congratulations! for new facility",
+                            webShowClose: true,
+                            webBgColor: "#14181a",
+                            backgroundColor: Colors.black,
+                            gravity: ToastGravity.BOTTOM_RIGHT,
+                          );
                         },
                   child: Container(
                       decoration: BoxDecoration(
@@ -131,7 +155,9 @@ class _FacilityOptionsColState extends State<FacilityOptionsCol> {
               width: mq.width * 0.15,
               height: mq.height * 1,
               child: StreamBuilder(
-                stream: FirebaseFirestore.instance.collection('facilities').snapshots(),
+                stream: FirebaseFirestore.instance
+                    .collection('facilities')
+                    .snapshots(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
                     return Center(
@@ -141,7 +167,9 @@ class _FacilityOptionsColState extends State<FacilityOptionsCol> {
                     );
                   }
                   final data = snapshot.data?.docs;
-                  facilityPro.facilityList = data?.map((e) => Facility.fromJson(e.data())).toList() ?? [];
+                  facilityPro.facilityList =
+                      data?.map((e) => Facility.fromJson(e.data())).toList() ??
+                          [];
 
                   // if(facilityList.isNotEmpty) facilityPro.updateCurrent(facilityList.first);
 
@@ -166,13 +194,19 @@ class _FacilityOptionsColState extends State<FacilityOptionsCol> {
                     child: ListView.builder(
                       shrinkWrap: true,
                       physics: const BouncingScrollPhysics(),
-                      itemCount: isSearching ? facilityPro.searchFacility.length : facilityPro.facilityList.length,
+                      itemCount: isSearching
+                          ? facilityPro.searchFacility.length
+                          : facilityPro.facilityList.length,
                       itemBuilder: (context, index) {
                         return FacilityCard(
-                          facility: isSearching ? facilityPro.searchFacility[index] : facilityPro.facilityList[index],
+                          facility: isSearching
+                              ? facilityPro.searchFacility[index]
+                              : facilityPro.facilityList[index],
                           isClicked: isSearching
-                              ? facilityPro.searchFacility[index].id == facilityPro.current?.id
-                              : facilityPro.facilityList[index].id == facilityPro.current?.id,
+                              ? facilityPro.searchFacility[index].id ==
+                                  facilityPro.current?.id
+                              : facilityPro.facilityList[index].id ==
+                                  facilityPro.current?.id,
                         );
                       },
                     ),

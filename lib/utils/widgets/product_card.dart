@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:se_admin_app/Providers/ProductProvider.dart';
 import 'package:se_admin_app/models/product.dart';
@@ -67,7 +68,7 @@ class _ProductCardState extends State<ProductCard> {
                     onPressed: (){
                       _showDeleteConfirmationDialog(context, widget.product, product);
                     },
-                    icon: Icon(Icons.close_rounded, color: AppColors.theme['secondaryColor']))
+                    icon: Icon(Icons.close_rounded,size: 18, color: AppColors.theme['highlightColor']))
               ],
             ),
           ),
@@ -82,14 +83,13 @@ class _ProductCardState extends State<ProductCard> {
   Future<void> _showDeleteConfirmationDialog(BuildContext context, Product? product, ProductProvider provider) async {
     return showDialog<void>(
       context: context,
-
       barrierDismissible: false, // Dialog cannot be dismissed by tapping outside
       builder: (BuildContext context) {
         return AlertDialog(
           elevation: 5,
-          shadowColor: AppColors.theme["highlightColor"],
-          surfaceTintColor: AppColors.theme["highlightColor"],
-          backgroundColor: AppColors.theme["tertiaryColor"],
+          shadowColor: AppColors.theme["tertiaryColor"],
+          surfaceTintColor: Colors.black,
+          backgroundColor: Colors.black,
           title: Text('Delete Confirmation', style: TextStyle(color: AppColors.theme['secondaryColor']),),
           content: SingleChildScrollView(
             child: ListBody(
@@ -112,7 +112,16 @@ class _ProductCardState extends State<ProductCard> {
                 product?.delete(provider);
                 provider.current = null;
                 if(product != null) provider.removeFromSearchList(product);
-                Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(context).pop();
+                Fluttertoast.showToast(
+                  toastLength: Toast.LENGTH_LONG,
+                  timeInSecForIosWeb: 5,
+                  msg: "${product!.name} Deleted",
+                  webShowClose: true,
+                  webBgColor: "#14181a",
+                  backgroundColor: Colors.black,
+                  gravity: ToastGravity.BOTTOM_RIGHT,
+                );
               },
               child: const Text('Delete', style: TextStyle(color: Colors.redAccent, fontSize: 16),),
             ),

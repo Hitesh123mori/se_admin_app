@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:se_admin_app/Providers/KClientProvider.dart';
 
@@ -73,6 +74,8 @@ class _KClientOptionsColState extends State<KClientOptionsCol> {
                             autovalidateMode: AutovalidateMode.always,
                             decoration: InputDecoration(
                               hintText: 'Search Here',
+                              prefixIcon: Icon(Icons.search,size: 22,),
+                              prefixIconColor: AppColors.theme['secondaryColor'],
                               hintStyle: TextStyle(color: AppColors.theme['secondaryColor']),
                               border: const OutlineInputBorder(
                                 borderSide: BorderSide.none,
@@ -101,6 +104,15 @@ class _KClientOptionsColState extends State<KClientOptionsCol> {
                           kClient.isNew = true;
                           kClient.notify();
                           kClient.current = newKClient;
+                          Fluttertoast.showToast(
+                            toastLength: Toast.LENGTH_LONG,
+                            timeInSecForIosWeb: 5,
+                            msg: "Congratulations! for new client",
+                            webShowClose: true,
+                            webBgColor: "#14181a",
+                            backgroundColor: Colors.black,
+                            gravity: ToastGravity.BOTTOM_RIGHT,
+                          );
                         },
                   child: Container(
                       decoration: BoxDecoration(
@@ -123,6 +135,7 @@ class _KClientOptionsColState extends State<KClientOptionsCol> {
               decoration: BoxDecoration(
                 color: AppColors.theme['tertiaryColor'],
                 borderRadius: BorderRadius.circular(10),
+
                 border: Border.all(
                   color: Colors.white24,
                 ),
