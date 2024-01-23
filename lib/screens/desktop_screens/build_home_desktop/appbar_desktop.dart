@@ -13,6 +13,7 @@ class _AppbarDesktopState extends State<AppbarDesktop> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      surfaceTintColor: Colors.transparent,
       backgroundColor: AppColors.theme['primaryColor'],
       flexibleSpace: Padding(
         padding: EdgeInsets.symmetric(
@@ -55,6 +56,7 @@ class _AppbarDesktopState extends State<AppbarDesktop> {
                 child: ElevatedButton(
                   onPressed: () {},
                   style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.theme['tertiaryColor'],
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
                       side: const BorderSide(color: Colors.white24),

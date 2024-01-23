@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:se_admin_app/main.dart';
 import 'package:se_admin_app/models/facility.dart';
@@ -16,9 +17,7 @@ class FacilityOptionsCol extends StatefulWidget {
 
 class _FacilityOptionsColState extends State<FacilityOptionsCol> {
   bool isSearching = false;
-  List<Facility> searchFacility = [];
-  List<Facility> facilityList = [];
-  final TextEditingController _controller = TextEditingController() ;
+  final TextEditingController _controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +40,8 @@ class _FacilityOptionsColState extends State<FacilityOptionsCol> {
                       ),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    constraints: const BoxConstraints(minWidth: 190, minHeight: 50),
+                    constraints:
+                        const BoxConstraints(minWidth: 190, minHeight: 50),
                     width: 190,
                     height: 50,
                     child: Center(
@@ -54,25 +54,35 @@ class _FacilityOptionsColState extends State<FacilityOptionsCol> {
                             onTap: () {
                               setState(() {
                                 isSearching = true;
+                                facilityPro.searchFacility =
+                                    facilityPro.facilityList;
                               });
                             },
                             onChanged: (value) {
                               setState(() {
-                                searchFacility = facilityList
-                                    .where((facility) => facility.name
-                                    .toLowerCase()
-                                    .contains(value.toLowerCase()))
-                                    .toList();
+                                if (value == "") {
+                                  facilityPro.searchFacility =
+                                      facilityPro.facilityList;
+                                } else {
+                                  facilityPro
+                                      .updateSearchList(value.toLowerCase());
+                                }
                               });
                             },
                             cursorColor: AppColors.theme['highlightColor'],
                             style: TextStyle(
                                 color: AppColors.theme['secondaryColor']),
-                            textAlign: TextAlign.center,
+                            textAlign: TextAlign.start,
                             autocorrect: true,
                             autovalidateMode: AutovalidateMode.always,
                             decoration: InputDecoration(
                               hintText: 'Search Here',
+                              prefixIcon: Icon(
+                                Icons.search,
+                                size: 22,
+                              ),
+                              prefixIconColor:
+                                  AppColors.theme['secondaryColor'],
                               hintStyle: TextStyle(
                                   color: AppColors.theme['secondaryColor']),
                               border: const OutlineInputBorder(
@@ -88,14 +98,32 @@ class _FacilityOptionsColState extends State<FacilityOptionsCol> {
                   ),
                 ),
                 InkWell(
-                  onTap: isSearching ? (){
-                    setState(() {
-                      isSearching = false ;
-                      _controller.text = '' ;
-
-                    });
-                  }:
-                      () {},
+                  onTap: isSearching
+                      ? () {
+                          setState(() {
+                            isSearching = false;
+                            _controller.text = '';
+                          });
+                        }
+                      : () {
+                          Facility newFacility = Facility(
+                              name: "New facility",
+                              discription: "Click here to add description here",
+                              imagePath: "");
+                          newFacility.add();
+                          facilityPro.isNew = true;
+                          facilityPro.current = newFacility;
+                          facilityPro.notify();
+                          Fluttertoast.showToast(
+                            toastLength: Toast.LENGTH_LONG,
+                            timeInSecForIosWeb: 5,
+                            msg: "Congratulations! for new facility",
+                            webShowClose: true,
+                            webBgColor: "#14181a",
+                            backgroundColor: Colors.black,
+                            gravity: ToastGravity.BOTTOM_RIGHT,
+                          );
+                        },
                   child: Container(
                       decoration: BoxDecoration(
                           border: Border.all(color: Colors.white24),
@@ -104,8 +132,7 @@ class _FacilityOptionsColState extends State<FacilityOptionsCol> {
                       height: 50,
                       width: 50,
                       child: Icon(
-                        isSearching ?Icons.cancel_outlined :
-                        Icons.add,
+                        isSearching ? Icons.cancel_outlined : Icons.add,
                         color: AppColors.theme['secondaryColor'],
                         size: 25,
                       )),
@@ -140,11 +167,13 @@ class _FacilityOptionsColState extends State<FacilityOptionsCol> {
                     );
                   }
                   final data = snapshot.data?.docs;
-                  facilityList = data?.map((e) => Facility.fromJson(e.data())).toList() ?? [];
+                  facilityPro.facilityList =
+                      data?.map((e) => Facility.fromJson(e.data())).toList() ??
+                          [];
 
-                  if(facilityList.isNotEmpty) facilityPro.updateCurrent(facilityList.first);
+                  // if(facilityList.isNotEmpty) facilityPro.updateCurrent(facilityList.first);
 
-                  if (facilityList.isEmpty) {
+                  if (facilityPro.facilityList.isEmpty) {
                     return const Center(
                       child: Text(
                         "No facility found",
@@ -152,7 +181,7 @@ class _FacilityOptionsColState extends State<FacilityOptionsCol> {
                       ),
                     );
                   }
-                  if (isSearching && searchFacility.isEmpty) {
+                  if (isSearching && facilityPro.searchFacility.isEmpty) {
                     return const Center(
                       child: Text(
                         "No search results found",
@@ -166,16 +195,18 @@ class _FacilityOptionsColState extends State<FacilityOptionsCol> {
                       shrinkWrap: true,
                       physics: const BouncingScrollPhysics(),
                       itemCount: isSearching
-                          ? searchFacility.length
-                          : facilityList.length,
+                          ? facilityPro.searchFacility.length
+                          : facilityPro.facilityList.length,
                       itemBuilder: (context, index) {
                         return FacilityCard(
                           facility: isSearching
-                              ? searchFacility[index]
-                              : facilityList[index],
+                              ? facilityPro.searchFacility[index]
+                              : facilityPro.facilityList[index],
                           isClicked: isSearching
-                              ? searchFacility[index].id == facilityPro.current?.id
-                              : facilityList[index].id == facilityPro.current?.id,
+                              ? facilityPro.searchFacility[index].id ==
+                                  facilityPro.current?.id
+                              : facilityPro.facilityList[index].id ==
+                                  facilityPro.current?.id,
                         );
                       },
                     ),

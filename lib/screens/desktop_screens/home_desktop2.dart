@@ -203,14 +203,8 @@ class _HomeScreenDesktop2State extends State<HomeScreenDesktop2> {
 
                   if (mainOp.current == "Primary Information") const DirectorInfoDesktop(),
                   if (mainOp.current == "Products") const ProductDetailDesktop(),
-                  if (mainOp.current == "Facilities")
-                    FacilityDetailDesktop(
-                      facility: facilityPro.current ?? Facility(name: '', imagePath: '', discription: ''),
-                    ),
-                  if (mainOp.current == "Clients")
-                    ClientsDetailDesktop(
-                      client: clientPro.current ?? KClient(name: '', imagePath: ''),
-                    ),
+                  if (mainOp.current == "Facilities") const FacilityDetailDesktop(),
+                  if (mainOp.current == "Clients") ClientsDetailDesktop(),
                 ],
               ),
             ),

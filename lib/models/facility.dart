@@ -1,4 +1,7 @@
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:se_admin_app/Providers/FacilityProvider.dart';
 import 'package:se_admin_app/apis/FirebaseAPI.dart';
+import 'package:se_admin_app/models/ImageModel.dart';
 
 class Facility {
   static final _collectionRef = FirebaseAPI.dbAPI.collection("facilities");
@@ -46,17 +49,60 @@ class Facility {
     return null;
   }
 
-  bool addToDB(){
-    _collectionRef.add(toJson())
-        .then((value) {
-      id = value.id;
-      print("added");
-      return true;
-    })
-        .onError((error, stackTrace) {
-      print(error);
-      return false;
-    });
-    return false;
+  Future<void> delete(FacilityProvider provider) async {
+    await _collectionRef.doc(id).delete();
+    provider.notify();
   }
+
+  Future<void> add() async {
+    final docRef = _collectionRef.doc();
+    id = docRef.id;
+    await docRef.set(toJson());
+  }
+
+  Future<void> update()async{
+    final docRef = _collectionRef.doc(id);
+    docRef.update({"name": name, "discription": discription}).onError((error, stackTrace) {
+      print("#error $error $stackTrace");
+    });
+  }
+
+
+  Future<ImageModel?> uploadImage(var image, FacilityProvider facilityProvider)async {
+    print("#Uploading img: id: $id");
+    var imageRef = FirebaseAPI.fireStoreAPI.child(imagePath);
+
+    imagePath = "images/facility/$id";
+    print("#path: $imagePath");
+
+    imageRef = FirebaseAPI.fireStoreAPI.child("$imagePath/${FirebaseAPI.uuid.v1()}");
+
+
+    return await imageRef.putData(image)
+        .then((p0) async {
+      final docRef = _collectionRef.doc(id);
+      return await docRef.update({"imagePath": imagePath})
+          .then((value) {
+        facilityProvider.notify();
+        return ImageModel(fullPath: p0.ref.fullPath, uri: p0.ref.getDownloadURL(), callback: () => facilityProvider.notify());
+      });
+    });
+    // .onError((error, stackTrace) {
+    //   print("#Error: ${stackTrace}");
+    // });
+  }
+
+  Future<dynamic> getImage(FacilityProvider facilityProvider)async {
+    final imgRef = FirebaseAPI.fireStoreAPI.child(imagePath);
+
+    return imgRef.list().then((value) {
+      List<Reference> refs = value.items;
+
+      print("#res: ${refs.map((e) => e.name)}");
+
+      return refs.map((e) => ImageModel(fullPath: e.fullPath, uri: e.getDownloadURL(), callback: () => facilityProvider.notify())).toList();
+    });
+
+  }
+
 }
