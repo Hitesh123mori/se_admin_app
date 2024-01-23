@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:se_admin_app/utils/colors.dart';
 import '../../main.dart';
 import '../../utils/widgets/login_textfield.dart';
@@ -92,8 +93,23 @@ class _LoginScreenDesktopState extends State<LoginScreenDesktop> {
                       splashColor: Colors.transparent,
                       highlightColor: Colors.transparent,
                       onTap: () {
-                        Navigator.push(context,MaterialPageRoute(builder: (context)=>HomeScreenDesktop2()));
-                        },
+                        String email = _emailController.text.trim();
+                        String password = _passController.text.trim();
+                        if (email == "adminse@gmail.com" && password == "se@2017") {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreenDesktop2()));
+                        } else {
+                          Fluttertoast.showToast(
+                            toastLength: Toast.LENGTH_LONG,
+                            timeInSecForIosWeb: 5,
+                            msg: "Invalid username/password. Please try again.",
+                            webShowClose: true,
+                            webBgColor: "#14181a",
+                            backgroundColor: Colors.black,
+                            gravity: ToastGravity.BOTTOM_RIGHT,
+                          );
+                        }
+                      },
+
                       child: Container(
                         constraints: BoxConstraints(
                           minHeight: 60,
