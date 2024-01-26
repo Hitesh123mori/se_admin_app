@@ -37,6 +37,7 @@ class _LoginTextFieldState extends State<LoginTextField> {
         borderRadius: BorderRadius.circular(10),
       ),
       child: TextField(
+        controller: widget.controller,
         cursorColor: AppColors.theme['highlightColor'],
         textAlign: !widget.isMobile ? TextAlign.center : TextAlign.start,
         style: TextStyle(

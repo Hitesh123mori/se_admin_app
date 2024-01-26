@@ -1,8 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:se_admin_app/apis/Authanticantion.dart';
 import 'package:se_admin_app/utils/colors.dart';
-import '../../main.dart';
-import '../../utils/widgets/login_textfield.dart';
+import 'package:se_admin_app/main.dart';
+import 'package:se_admin_app/utils/widgets/login_textfield.dart';
 import 'home_desktop2.dart';
 
 class LoginScreenDesktop extends StatefulWidget {
@@ -15,8 +17,11 @@ class LoginScreenDesktop extends StatefulWidget {
 class _LoginScreenDesktopState extends State<LoginScreenDesktop> {
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
 
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _otpController = TextEditingController();
+  bool visible = false;
+  var temp;
+
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +33,7 @@ class _LoginScreenDesktopState extends State<LoginScreenDesktop> {
         backgroundColor: AppColors.theme['primaryColor'],
         body: Center(
           child: Container(
-            constraints: BoxConstraints(
+            constraints: const BoxConstraints(
               minHeight: 500.0,
               minWidth: 400.0,
             ),
@@ -49,7 +54,7 @@ class _LoginScreenDesktopState extends State<LoginScreenDesktop> {
                     SizedBox(
                       height: mq.height * 0.05,
                     ),
-                    Image(
+                    const Image(
                       image: AssetImage("assets/images/logos/se_logo.png"),
                       height: 100,
                       width: 100,
@@ -68,50 +73,90 @@ class _LoginScreenDesktopState extends State<LoginScreenDesktop> {
                       ),
                     ),
                     LoginTextField(
-                      icon: Icons.email_outlined,
-                      hintText: 'Email',
+                      icon: Icons.phone,
+                      hintText: 'Phone number',
                       isPassword: false,
                       isEmail: true,
                       isMobile: false,
-                      controller: _emailController,
+                      controller: _phoneController,
                     ),
                     SizedBox(
                       height: mq.height * 0.02,
                     ),
-                    LoginTextField(
-                      icon: Icons.lock_outline,
-                      hintText: 'Password',
+                    visible ?LoginTextField(
+                      icon: Icons.password,
+                      hintText: 'OTP',
                       isPassword: true,
                       isEmail: false,
                       isMobile: false,
-                      controller: _passController,
-                    ),
+                      controller: _otpController,
+                    ) : Container(),
                     SizedBox(
                       height: mq.height * 0.02,
                     ),
                     InkWell(
                       splashColor: Colors.transparent,
                       highlightColor: Colors.transparent,
-                      onTap: () {
-                        String email = _emailController.text.trim();
-                        String password = _passController.text.trim();
-                        if (email == "adminse@gmail.com" && password == "se@2017") {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreenDesktop2()));
-                        } else {
-                          Fluttertoast.showToast(
-                            toastLength: Toast.LENGTH_LONG,
-                            timeInSecForIosWeb: 5,
-                            msg: "Invalid username/password. Please try again.",
-                            webShowClose: true,
-                            webBgColor: "#14181a",
-                            backgroundColor: Colors.black,
-                            gravity: ToastGravity.BOTTOM_RIGHT,
-                          );
+                      onTap: () async {
+                        if(!visible){
+                          try{
+                            temp = await FirebaseAuthentication().sendOTP(_phoneController.text);
+                            // print("#res: $temp");
+                            setState(() {visible = !visible;});
+                            Fluttertoast.showToast(
+                              toastLength: Toast.LENGTH_LONG,
+                              timeInSecForIosWeb: 5,
+                              msg: "OTP Sent to +91 ${_phoneController.text}",
+                              webShowClose: true,
+                              webBgColor: "#14181a",
+                              backgroundColor: Colors.black,
+                              gravity: ToastGravity.BOTTOM_RIGHT,
+                            );
+                          }
+                          on FirebaseAuthException catch (e){
+                            Fluttertoast.showToast(
+                              toastLength: Toast.LENGTH_LONG,
+                              timeInSecForIosWeb: 5,
+                              msg: "Invalid phone number. Please try again.",
+                              webShowClose: true,
+                              webBgColor: "#14181a",
+                              backgroundColor: Colors.black,
+                              gravity: ToastGravity.BOTTOM_RIGHT,
+                            );
+                          }
+
+                        }
+                        else{
+                          bool isAuth = await FirebaseAuthentication().authenticate(temp, _otpController.text);
+                          if(isAuth){
+                            Fluttertoast.showToast(
+                              toastLength: Toast.LENGTH_LONG,
+                              timeInSecForIosWeb: 5,
+                              msg: "Authentication successful.",
+                              webShowClose: true,
+                              webBgColor: "#14181a",
+                              backgroundColor: Colors.black,
+                              gravity: ToastGravity.BOTTOM_RIGHT,
+                            );
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => const HomeScreenDesktop2()));
+                          }
+                          else{
+                            Fluttertoast.showToast(
+                              toastLength: Toast.LENGTH_LONG,
+                              timeInSecForIosWeb: 5,
+                              msg: "Please enter valid OTP",
+                              webShowClose: true,
+                              webBgColor: "#14181a",
+                              backgroundColor: Colors.black,
+                              gravity: ToastGravity.BOTTOM_RIGHT,
+
+                            );
+                          }
                         }
                       },
 
                       child: Container(
-                        constraints: BoxConstraints(
+                        constraints: const BoxConstraints(
                           minHeight: 60,
                           minWidth: 40,
                           maxHeight: 60,
@@ -129,10 +174,10 @@ class _LoginScreenDesktopState extends State<LoginScreenDesktop> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.login),
-                            SizedBox(width: 10,),
+                            const Icon(Icons.login),
+                            const SizedBox(width: 10,),
                             Text(
-                              'Log In',
+                              !visible? 'Send OTP': 'Log In',
                               style: TextStyle(
                                 color: AppColors.theme['primaryColor'],
                                 fontSize: 18,

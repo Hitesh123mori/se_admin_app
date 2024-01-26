@@ -85,6 +85,7 @@ class Product {
             return await docRef.update({"imagePath": imagePath})
                 .then((value) {
                   productProvider.notify();
+                  print("uri: ${p0.ref.getDownloadURL().toString()}");
                   return ImageModel(fullPath: p0.ref.fullPath, uri: p0.ref.getDownloadURL(), callback: () => productProvider.notify());
                 });
         });
@@ -100,7 +101,7 @@ class Product {
       List<Reference> refs = value.items;
 
       print("#res: ${refs.map((e) => e.name)}");
-
+      print("#");
       return refs.map((e) => ImageModel(fullPath: e.fullPath, uri: e.getDownloadURL(), callback: () => productProvider.notify())).toList();
     });
 
