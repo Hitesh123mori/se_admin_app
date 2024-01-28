@@ -10,6 +10,7 @@ import 'package:se_admin_app/platform_define.dart';
 import 'package:se_admin_app/screens/desktop_screens/home_desktop2.dart';
 import 'package:se_admin_app/screens/temp.dart';
 import 'Providers/MainOptionProvider.dart';
+import 'apis/Authanticantion.dart';
 import 'constant/constants_provider.dart';
 import 'firebase_options.dart';
 
@@ -49,8 +50,9 @@ class _AdminAppState extends State<AdminApp> {
         useMaterial3: true,
       ),
 
-      home: PlatformDefine(),
+      home: const PlatformDefine(),
       // home: MyDropzoneView(),
+      // home: PhoneOTPVerification(),
     );
 
   }
