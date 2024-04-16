@@ -74,7 +74,7 @@ class KClient {
     imageRef = FirebaseAPI.fireStoreAPI.child("$imagePath/${FirebaseAPI.uuid.v1()}");
 
 
-    return await imageRef.putData(image)
+      return await imageRef.putData(image)
         .then((p0) async {
       final docRef = _collectionRef.doc(id);
       return await docRef.update({"imagePath": imagePath})
