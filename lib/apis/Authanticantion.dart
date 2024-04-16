@@ -7,8 +7,13 @@ class FirebaseAuthentication {
   sendOTP(String phoneNumber) async {
     this.phoneNumber = phoneNumber;
     FirebaseAuth auth = FirebaseAuth.instance;
+    //todo : reCaptcha screen
     ConfirmationResult result = await auth.signInWithPhoneNumber(
-      '+91$phoneNumber',
+      '+91${phoneNumber.toString()}',
+        // RecaptchaVerifier(
+        //   container: 'recaptcha',
+        //   size: RecaptchaVerifierSize.compact,
+        //   theme: RecaptchaVerifierTheme.dark,),
     );
     return result;
   }

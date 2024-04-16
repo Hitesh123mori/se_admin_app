@@ -86,6 +86,7 @@ class _ImageDropZoneState extends State<ImageDropZone> {
             ),
           ),
         ),
+
         if (widget.imgFiles.isNotEmpty)
           CarouselSlider.builder(
             itemCount: widget.imgFiles.length,

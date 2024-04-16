@@ -114,6 +114,7 @@ class _LoginScreenDesktopState extends State<LoginScreenDesktop> {
                             );
                           }
                           on FirebaseAuthException catch (e){
+                            print("error: $e");
                             Fluttertoast.showToast(
                               toastLength: Toast.LENGTH_LONG,
                               timeInSecForIosWeb: 5,
