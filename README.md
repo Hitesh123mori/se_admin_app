@@ -84,6 +84,6 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE) f
 
 ## Contact
 
-For any queries, you can reach out to [admin@savyasachiengineering.com](mailto:admin@savyasachiengineering.com).
+For any queries, you can reach out to [admin@savyasachiengineering.com](mailto:db.savyasachi@gmail.com).
 
 Thank you for choosing Savyasachi Engineering's Admin Panel to manage your operational needs efficiently.
