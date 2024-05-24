@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/widgets.dart';
-import 'package:se_admin_app/apis/FirebaseAPI.dart';
+import 'package:se_admin_app/apis/FirebaseAPIs.dart';
 
 class InfoProvider extends ChangeNotifier{
-  final _colRef = FirebaseAPI.dbAPI.collection("primaryInfo");
+  final _colRef = FirebaseAPIs.dbAPI.collection("primaryInfo");
 
   Map<String, bool> options = {
     "About Us": true,

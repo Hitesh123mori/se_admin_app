@@ -1,10 +1,10 @@
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:se_admin_app/Providers/KClientProvider.dart';
-import 'package:se_admin_app/apis/FirebaseAPI.dart';
+import 'package:se_admin_app/apis/FirebaseAPIs.dart';
 import 'package:se_admin_app/models/ImageModel.dart';
 
 class KClient {
-  static final _collectionRef = FirebaseAPI.dbAPI.collection("clients");
+  static final _collectionRef = FirebaseAPIs.dbAPI.collection("clients");
   KClient({
     required this.name,
     required this.imagePath,
@@ -66,12 +66,12 @@ class KClient {
 
   Future<ImageModel?> uploadImage(var image, KClientProvider kClientProvider)async {
     print("#Uploading img: id: $id");
-    var imageRef = FirebaseAPI.fireStoreAPI.child(imagePath);
+    var imageRef = FirebaseAPIs.fireStoreAPI.child(imagePath);
 
     imagePath = "images/kclient/$id";
     print("#path: $imagePath");
 
-    imageRef = FirebaseAPI.fireStoreAPI.child("$imagePath/${FirebaseAPI.uuid.v1()}");
+    imageRef = FirebaseAPIs.fireStoreAPI.child("$imagePath/${FirebaseAPIs.uuid.v1()}");
 
 
       return await imageRef.putData(image)
@@ -89,7 +89,7 @@ class KClient {
   }
 
   Future<dynamic> getImage(KClientProvider kClientProvider)async {
-    final imgRef = FirebaseAPI.fireStoreAPI.child(imagePath);
+    final imgRef = FirebaseAPIs.fireStoreAPI.child(imagePath);
 
     return imgRef.list().then((value) {
       List<Reference> refs = value.items;

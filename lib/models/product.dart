@@ -2,11 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:se_admin_app/Providers/ProductProvider.dart';
-import 'package:se_admin_app/apis/FirebaseAPI.dart';
+import 'package:se_admin_app/apis/FirebaseAPIs.dart';
 import 'package:se_admin_app/models/ImageModel.dart';
 
 class Product {
-  static final _collectionRef = FirebaseAPI.dbAPI.collection("products");
+  static final _collectionRef = FirebaseAPIs.dbAPI.collection("products");
 
   Product({
     required this.name,
@@ -71,12 +71,12 @@ class Product {
 
   Future<ImageModel?> uploadImage(var image, ProductProvider productProvider)async {
     print("#Uploading img: id: $id");
-    var imageRef = FirebaseAPI.fireStoreAPI.child(imagePath);
+    var imageRef = FirebaseAPIs.fireStoreAPI.child(imagePath);
 
     imagePath = "images/products/$id";
     print("#path: $imagePath");
 
-    imageRef = FirebaseAPI.fireStoreAPI.child("$imagePath/${FirebaseAPI.uuid.v1()}");
+    imageRef = FirebaseAPIs.fireStoreAPI.child("$imagePath/${FirebaseAPIs.uuid.v1()}");
 
 
     return await imageRef.putData(image)
@@ -95,7 +95,7 @@ class Product {
   }
 
   Future<dynamic> getImage(ProductProvider productProvider)async {
-    final imgRef = FirebaseAPI.fireStoreAPI.child(imagePath);
+    final imgRef = FirebaseAPIs.fireStoreAPI.child(imagePath);
 
     return imgRef.list().then((value) {
       List<Reference> refs = value.items;

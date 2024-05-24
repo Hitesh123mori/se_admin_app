@@ -1,4 +1,4 @@
-import 'package:se_admin_app/apis/FirebaseAPI.dart';
+import 'package:se_admin_app/apis/FirebaseAPIs.dart';
 
 /// id : "a"
 /// path : "p"
@@ -27,7 +27,7 @@ class ImageModel {
 
   Future<void> delete()async {
     if(fullPath == null) return;
-    FirebaseAPI.fireStoreAPI.child(fullPath!).delete();
+    FirebaseAPIs.fireStoreAPI.child(fullPath!).delete();
     callback!;
   }
 }

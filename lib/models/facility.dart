@@ -1,10 +1,10 @@
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:se_admin_app/Providers/FacilityProvider.dart';
-import 'package:se_admin_app/apis/FirebaseAPI.dart';
+import 'package:se_admin_app/apis/FirebaseAPIs.dart';
 import 'package:se_admin_app/models/ImageModel.dart';
 
 class Facility {
-  static final _collectionRef = FirebaseAPI.dbAPI.collection("facilities");
+  static final _collectionRef = FirebaseAPIs.dbAPI.collection("facilities");
 
   Facility({
     required this.name,
@@ -70,12 +70,12 @@ class Facility {
 
   Future<ImageModel?> uploadImage(var image, FacilityProvider facilityProvider)async {
     print("#Uploading img: id: $id");
-    var imageRef = FirebaseAPI.fireStoreAPI.child(imagePath);
+    var imageRef = FirebaseAPIs.fireStoreAPI.child(imagePath);
 
     imagePath = "images/facility/$id";
     print("#path: $imagePath");
 
-    imageRef = FirebaseAPI.fireStoreAPI.child("$imagePath/${FirebaseAPI.uuid.v1()}");
+    imageRef = FirebaseAPIs.fireStoreAPI.child("$imagePath/${FirebaseAPIs.uuid.v1()}");
 
 
     return await imageRef.putData(image)
@@ -93,7 +93,7 @@ class Facility {
   }
 
   Future<dynamic> getImage(FacilityProvider facilityProvider)async {
-    final imgRef = FirebaseAPI.fireStoreAPI.child(imagePath);
+    final imgRef = FirebaseAPIs.fireStoreAPI.child(imagePath);
 
     return imgRef.list().then((value) {
       List<Reference> refs = value.items;
